@@ -1,14 +1,29 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import { View, StyleSheet, Text } from 'react-native';
+import { Header } from 'react-native-elements';
 
 export default class SettingsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'app.json',
-  };
+    
+    static navigationOptions = {
+        header: <Header
+                    placement="center"
+                    leftComponent={{ icon: 'menu', color: '#fff' }}
+                    centerComponent={{ text: '設定', style: { color: '#fff', fontWeight: 'bold' }}}
+                    rightComponent={{ icon: 'search', color: '#fff' }}
+                />,
+    };
 
-  render() {
-    /* Go ahead and delete ExpoConfigView and replace it with your
-     * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
-  }
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text>test comment</Text>
+            </View>
+        );
+    }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 10
+    },
+});

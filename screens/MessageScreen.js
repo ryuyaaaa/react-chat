@@ -102,7 +102,7 @@ export default class Message extends React.Component {
         messages.forEach((message) => {
             this.ref.doc().add(message);
         });
-    
+
         // onCollectionUpdateが呼ばれるので、ここではstateには渡さない
         //this.setState((previousState) => ({
         //  messages: GiftedChat.append(previousState.messages, messages),

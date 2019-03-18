@@ -2,8 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
-const firebase = require('../firebase');
-require("firebase/firestore");
+var firestore = require('../firebase').db;
 
 export default class Message extends React.Component {
 
@@ -11,47 +10,49 @@ export default class Message extends React.Component {
         super(props);
 
         this.state = {
-            messages: this._messages,
-            typingMessage: ''
-        };
-
-        firebase.firestore().enablePersistence()
-                        .then(() => {
-                            // Initialize firestore
-                            var db = firebase.firestore();
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-
-        db.collection('uid').add({
-            first: "Alan",
-            middle: "Mathison",
-            last: "Turing",
-            born: 1912
-        })
-        .then(function(docRef) {
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch(function(error) {
-            console.error("Error adding document: ", error);
-        });
+            messages: [],
+        }
     }
 
+    
     componentWillMount() {
+
+        firestore.collection("messages").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data());
+
+                this.setState({
+                    messages: this.state.messages.concat(
+                        {
+                            _id: doc.data().to,
+                            text: doc.data().text,
+                            createdAt: doc.data().createdAt.toDate(),
+                            user: {
+                                _id: doc.data().from,
+                                avatar: 'https://pbs.twimg.com/media/CsKCw7WVIAA-Ebe.jpg',
+                            }
+                        }
+                    )
+                })
+            });
+        });
+
+        /*
         this.setState({
             messages: [
                 {
-                    _id: 1,
+                    _id: 1, // to_id
                     text: 'こんにちは、りゅーやさん！今日もかっこいいですね!!!',
                     createdAt: new Date(),
                     user: {
-                        _id: 2,
-                        name: 'みんみ',
+                        _id: 'aaa@gmail.com',
+                        name: 'みんみ', // メッセージを送信しているユーザ
                         avatar: 'https://pbs.twimg.com/media/CsKCw7WVIAA-Ebe.jpg',
                     },
                 },
             ],
         })
+        */
     }
 
     onSend(messages = []) {
@@ -66,7 +67,7 @@ export default class Message extends React.Component {
                 messages={this.state.messages}
                 onSend={messages => this.onSend(messages)}
                 user={{
-                    _id: 1,
+                    _id: 'aaa@gmail.com',
                 }}
             />
         );

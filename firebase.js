@@ -1,4 +1,6 @@
 import firebase from 'firebase';
+import firestore from 'firebase/firestore'
+
 import {
     API_KEY,
     AUTH_DOMAIN,
@@ -19,4 +21,7 @@ const config = {
 
 firebase.initializeApp(config);
 
-export default firebase;
+var db = firebase.firestore();
+
+exports.firebase = firebase;
+exports.db = db;

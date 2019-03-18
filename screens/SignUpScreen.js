@@ -107,15 +107,8 @@ export default class LogInScreen extends React.Component {
         .then((response) => {
             response.json().then((json) => {
                 if (json.uid != null) {
-                    async () => {
-                        try {
-                            await AsyncStorage.setItem('uid', json.uid);
-                            this.props.navigation.navigate('AuthLoading');
-                        } catch (error) {
-                            // Error saving data
-                            console.log('async storage error');
-                        }
-                    }
+                    this.setUidToStorage(json.uid);
+                    this.props.navigation.navigate('Main');
                 } else {
                     this.setState({modal: false});
                 }
@@ -126,6 +119,14 @@ export default class LogInScreen extends React.Component {
 
     closeModal = () => {
         this.setState({modal:false});
+    }
+
+    setUidToStorage = async(uid) => {
+        try {
+            await AsyncStorage.setItem('uid', uid);
+        } catch(error) {
+            console.log(error);
+        }
     }
 }
 

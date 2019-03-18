@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, Modal, ActivityIndicator } from 'react-native';
+import { AsyncStorage, StyleSheet, View, Text, Modal, ActivityIndicator } from 'react-native';
 import { Header } from 'react-native-elements'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
 import Button from 'apsl-react-native-button';
+const firebase = require('../firebase');
 
 const PORT = 'https://nameless-crag-96674.herokuapp.com/api/users/login';
 
@@ -106,6 +107,7 @@ export default class LogInScreen extends React.Component {
         .then((response) => {
             response.json().then((json) => {
                 if (json.uid != null) {
+                    this.setUidToStorage(json.uid);
                     this.props.navigation.navigate('Main');
                 } else {
                     this.setState({modal: false});
@@ -117,6 +119,14 @@ export default class LogInScreen extends React.Component {
 
     closeModal = () => {
         this.setState({modal:false});
+    }
+
+    setUidToStorage = async(uid) => {
+        try {
+            await AsyncStorage.setItem('uid', uid);
+        } catch(error) {
+            console.log(error);
+        }
     }
 }
 

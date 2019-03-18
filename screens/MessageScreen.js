@@ -1,26 +1,33 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { Header } from 'react-native-elements';
 
-var firestore = require('../firebase').db;
+const firestore = require('../firebase').db;
 
 export default class Message extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this._getUid();
+        this._getInfo();
 
         this.state = {
             messages: [],
         }
     }
 
+    static navigationOptions = {
+        header: <Header
+                    placement="center"
+                    centerComponent={{ text: '会話', style: { color: '#fff' } }}
+                />,
+    };
+
     componentDidMount() {
-        
         // Firestoreの「messages」コレクションを参照
         this.ref = firestore.collection('messages');
-    
+
         // refの更新時イベントにonCollectionUpdate登録
         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
     }
@@ -35,6 +42,7 @@ export default class Message extends React.Component {
         // Firestoreのコレクションに追加
         messages.forEach((message) => {
             var data = message;
+            data._id = this.toUid;
             data.createdAt = message.createdAt.toISOString();
             this.ref.add(data);
         });
@@ -53,9 +61,10 @@ export default class Message extends React.Component {
         this.setState({ messages });
     }
 
-    _getUid = async() => {
+    _getInfo = async() => {
         try {
             this.uid = await AsyncStorage.getItem('uid');
+            this.toUid = await AsyncStorage.getItem('messageTo');
         } catch(error) {
             console.log(error);
         }

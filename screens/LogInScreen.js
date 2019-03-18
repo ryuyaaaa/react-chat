@@ -4,7 +4,6 @@ import { Header } from 'react-native-elements'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
 import Button from 'apsl-react-native-button';
-const firebase = require('../firebase');
 
 const PORT = 'https://nameless-crag-96674.herokuapp.com/api/users/login';
 

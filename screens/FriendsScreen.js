@@ -41,18 +41,6 @@ export default class HomeScreen extends React.Component {
                         <ListItem>
                             <Text>Bradley Horowitz</Text>
                         </ListItem>
-                        <ListItem itemDivider>
-                            <Text>A</Text>
-                        </ListItem>                    
-                        <ListItem>
-                            <Text>Ali Connors</Text>
-                        </ListItem>
-                        <ListItem itemDivider>
-                            <Text>B</Text>
-                        </ListItem>  
-                        <ListItem>
-                            <Text>Bradley Horowitz</Text>
-                        </ListItem>
                     </List>
                 </Content>
             </Container>

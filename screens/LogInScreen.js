@@ -108,7 +108,7 @@ export default class LogInScreen extends React.Component {
 
                 if (json.uid != null) {
                     this.setUidToStorage(json.uid);
-                    this.props.navigation.navigate('Main', {uid: json.uid});
+                    this.props.navigation.navigate('Main');
                 } else {
                     this.setState({modal: false});
                 }

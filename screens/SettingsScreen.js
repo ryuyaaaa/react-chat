@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text } from 'react-native';
-import { Header, SocialIcon, Divider } from 'react-native-elements';
+import { Header, SocialIcon } from 'react-native-elements';
 
 const firestore = require('../firebase').db;
 
@@ -9,7 +9,7 @@ export default class SettingsScreen extends React.Component {
     constructor(props) {
         super(props);
 
-        //this._getUid();
+        this._getUid();
 
         this.state = {
             name: '',
@@ -26,36 +26,25 @@ export default class SettingsScreen extends React.Component {
                     placement="center"
                     leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '設定', style: { color: '#fff', fontWeight: 'bold' }}}
-                    rightComponent={{ icon: 'search', color: '#fff' }}
+                    rightComponent={{ icon: 'search', color: '#fff', onPress: () => this.saveProfile() }}
                 />,
     };
 
     componentDidMount() {
-        // Firestoreの「rooms」コレクションを参照
+
+        // Firestoreの「users」コレクションを参照
         this.roomsRef = firestore.collection('users');
-    
-        this.roomsRef.doc(this.props.navigation.state.params.uid).get().then((doc) => {
-            if (doc.exists) {
-                this.setState({
-                    name: doc.data().name,
-                    comment: doc.data().comment
-                })
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        })
+
         // roomsRefの更新時イベントにonCollectionUpdate登録
-        //this.unsubscribe = this.roomsRef.onSnapshot(this.onCollectionUpdate);
+        this.unsubscribe = this.roomsRef.onSnapshot(this.onCollectionUpdate);
     }
 
     componentWillunmount() {
         // onCollectionUpdateの登録解除
-        //this.unsubscribe();
+        this.unsubscribe();
     }
 
     // firestoreのコレクションが更新された時のイベント
-    /*
     onCollectionUpdate = (querySnapshot) => {
 
         var name = '';
@@ -70,28 +59,13 @@ export default class SettingsScreen extends React.Component {
         // name, commentをstateに渡す
         this.setState({ name: name, comment: comment });
     }
-    */
 
     typeName = (text) => {
         this.setState({name: text});
-        // Firestoreのコレクションに追加
-        var data = {
-            _id: this.uid,
-            name: this.state.name,
-            comment: this.state.comment,
-        }
-        this.roomsRef.doc(this.uid).set(data);
     }
 
     typeComment = (text) => {
         this.setState({comment: text});
-        // Firestoreのコレクションに追加
-        var data = {
-            _id: this.uid,
-            name: this.state.name,
-            comment: this.state.comment,
-        }
-        this.roomsRef.doc(this.uid).set(data);
     }
 
     _getUid = async() => {
@@ -100,6 +74,16 @@ export default class SettingsScreen extends React.Component {
         } catch(error) {
             console.log(error);
         }
+    }
+
+    saveProfile = () => {
+        // Firestoreのコレクションに追加
+        var data = {
+            _id: this.uid,
+            name: this.state.name,
+            comment: this.state.comment,
+        }
+        this.roomsRef.doc(this.uid).set(data);
     }
 
     render() {
@@ -120,6 +104,7 @@ export default class SettingsScreen extends React.Component {
                                 placeholder='---NAME---'
                                 value={this.state.name}
                                 onChangeText={this.typeName}
+                                onEndEditing={this.saveProfile}
                             />
                         </View>
                     
@@ -132,6 +117,7 @@ export default class SettingsScreen extends React.Component {
                                 placeholder='---COMMENT---'
                                 value={this.state.comment}
                                 onChangeText={this.typeComment}
+                                onEndEditing={this.saveProfile}
                             />
 
                         </View>

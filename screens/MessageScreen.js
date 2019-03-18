@@ -51,10 +51,21 @@ export default class Message extends React.Component {
     // firestoreのコレクションが更新された時のイベント
     onCollectionUpdate = (querySnapshot) => {
         
-        // docsのdataをmessagesとして取得
-        const messages = querySnapshot.docs.map((doc) => {
-            return doc.data();
+        var messages = [];
+        querySnapshot.docs.forEach((doc) => {    
+            if (doc.data().user._id == this.uid || doc.data().user._id == this.toUid) {
+                messages.push(doc.data());
+            }
         });
+
+        // docsのdataをmessagesとして取得
+        /*
+        const messages = querySnapshot.docs.map((doc) => {
+            if (doc.data() == this.uid) {
+                return doc.data();    
+            }
+        });
+        */
     
         //this.state.messages.concat(messages);
         // messagesをstateに渡す

@@ -42,14 +42,16 @@ export default class LinksScreen extends React.Component {
 
     // firestoreのコレクションが更新された時のイベント
     onCollectionUpdate = (querySnapshot) => {
-        
-        // docsのdataをmessagesとして取得
-        const rooms = querySnapshot.docs.map((doc) => {
-            return doc.data();
+
+        var rooms = [];
+        querySnapshot.docs.forEach((doc) => {
+            if (doc.data().from == this.uid) {
+                rooms.push(doc.data());
+            }
         });
     
         // roomsをstateに渡す
-        this.setState({ rooms });
+        this.setState({ rooms: rooms });
     }
 
     addTalkRoom = (to) => {
@@ -58,7 +60,7 @@ export default class LinksScreen extends React.Component {
             from: this.uid,
             to: to,
         }
-        this.roomsRef.set(data);
+        this.roomsRef.add(data);
     }
 
     _getUid = async() => {
@@ -80,31 +82,31 @@ export default class LinksScreen extends React.Component {
 
     render() {
         return ( 
-                <Container>
-                    <Content>
-                        <List>
-                            {this.state.rooms.map((room) =>
-                               
-                                <ListItem avatar onPress={() => this._moveToMessage(room.to)}>
-                                    <Left>
-                                        <Thumbnail source={require('../assets/images/celine-farach.jpg')} />
-                                    </Left>
-                                    <Body>
-                                        <Text>{room.to}</Text>
-                                        <Text note>I love Ryuya.......</Text>
-                                    </Body>
-                                    <Right>
-                                        <Text note>3:43 pm</Text>
-                                    </Right>
-                                </ListItem>
-                               
-                            )}
-                        </List>
-                    </Content>
-                    <Button title='message' onPress={() => {this.props.navigation.navigate('Message')}}/>
+            <Container>
+                <Content>
+                    <List>
+                        {this.state.rooms.map((room) =>
+                            
+                            <ListItem avatar onPress={() => this._moveToMessage(room.to)}>
+                                <Left>
+                                    <Thumbnail source={require('../assets/images/celine-farach.jpg')} />
+                                </Left>
+                                <Body>
+                                    <Text>{room.to}</Text>
+                                    <Text note>I love Ryuya.......</Text>
+                                </Body>
+                                <Right>
+                                    <Text note>3:43 pm</Text>
+                                </Right>
+                            </ListItem>
+                            
+                        )}
+                    </List>
+                </Content>
+                <Button title='message' onPress={() => {this.props.navigation.navigate('Message')}}/>
 
-                    <Button title='追加' onPress={() => {this.addTalkRoom('bbb@gmail.com')}}/>
-                </Container>
+                <Button title='追加' onPress={() => {this.addTalkRoom('aaa@gmail.com')}}/>
+            </Container>
             
         );
     }

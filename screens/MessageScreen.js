@@ -14,9 +14,44 @@ export default class Message extends React.Component {
         }
     }
 
+    componentDidMount() {
+        
+        // Firestoreの「messages」コレクションを参照
+        this.ref = firestore.collection('messages');
     
-    componentWillMount() {
+        // refの更新時イベントにonCollectionUpdate登録
+        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+    }
 
+    
+    // componentWillMount() {
+
+        /*
+        firestore.collection('messages').onSnapshot((doc) => {
+            firestore.collection("messages").get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.data());
+    
+                    this.setState({
+                        messages: this.state.messages.concat(
+                            {
+                                _id: doc.data().to,
+                                text: doc.data().text,
+                                createdAt: doc.data().createdAt.toDate(),
+                                user: {
+                                    _id: doc.data().from,
+                                    avatar: 'https://pbs.twimg.com/media/CsKCw7WVIAA-Ebe.jpg',
+                                }
+                            }
+                        )
+                    })
+                });
+            });
+        });
+        */
+
+        // test: 初めにメッセージを登録しておく
+        /*
         firestore.collection("messages").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 console.log(doc.data());
@@ -36,6 +71,7 @@ export default class Message extends React.Component {
                 })
             });
         });
+        */
 
         /*
         this.setState({
@@ -53,21 +89,46 @@ export default class Message extends React.Component {
             ],
         })
         */
+    // }
+
+    componentWillunmount() {
+        // onCollectionUpdateの登録解除
+        this.unsubscribe();
     }
 
-    onSend(messages = []) {
-        this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-        }));
+    onSend = (messages = []) => {
+
+        // Firestoreのコレクションに追加
+        messages.forEach((message) => {
+            this.ref.doc().add(message);
+        });
+    
+        // onCollectionUpdateが呼ばれるので、ここではstateには渡さない
+        //this.setState((previousState) => ({
+        //  messages: GiftedChat.append(previousState.messages, messages),
+        //}));
+    }
+
+    // firestoreのコレクションが更新された時のイベント
+    onCollectionUpdate = (querySnapshot) => {
+        // docsのdataをmessagesとして取得
+        const messages = querySnapshot.docs.map((doc) => {
+            return doc.data();
+        });
+    
+        //this.state.messages.concat(messages);
+        // messagesをstateに渡す
+        this.setState({ messages });
     }
   
     render() {
         return (
             <GiftedChat
                 messages={this.state.messages}
-                onSend={messages => this.onSend(messages)}
+                onSend= {this.onSend}
                 user={{
                     _id: 'aaa@gmail.com',
+                    name: 'ryuya'
                 }}
             />
         );

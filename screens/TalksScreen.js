@@ -13,7 +13,6 @@ export default class LinksScreen extends React.Component {
         this._getUid();
 
         this.state = {
-            uid: '',
             rooms: [],
         }
     }
@@ -103,7 +102,6 @@ export default class LinksScreen extends React.Component {
                         )}
                     </List>
                 </Content>
-                <Button title='message' onPress={() => {this.props.navigation.navigate('Message')}}/>
 
                 <Button title='追加' onPress={() => {this.addTalkRoom('aaa@gmail.com')}}/>
             </Container>

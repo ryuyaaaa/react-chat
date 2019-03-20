@@ -1,7 +1,8 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Button, Modal, View } from 'react-native';
-import { Header, SearchBar } from 'react-native-elements';
+import { AsyncStorage, StyleSheet, Button, Modal, View, TextInput, Alert } from 'react-native';
+import { Header, Input } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const firestore = require('../firebase').db;
 
@@ -17,6 +18,7 @@ export default class FriendsScreen extends React.Component {
             users: [],
             modal: false,
             search: '',
+            error: false,
         }
     }
     
@@ -100,23 +102,53 @@ export default class FriendsScreen extends React.Component {
         this.setState({modal:false});
     }
 
-    updateSearch = (search) => {
-        this.setState({ search: search });
-    };
+    checkUserExist = () => {
+
+        var searchId = this.state.search;
+        var error = true;
+        
+        if (searchId) {
+            this.usersRef.get().then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    if (doc.data()._id == searchId) {
+                        error = false;
+                    }
+                });
+            }).then(() => {
+                this.setState({error: error});
+
+                if (!error) {
+                    this.setState({modal: true});
+                }
+            });
+        }
+    }
+
+    typesearch = (text) => {
+        this.setState({search: text});
+    }
 
     render() {
         return (
             <View style={styles.container}>
 
-            <SearchBar
-                placeholder='追加するメールアドレスを入力'
-                onChangeText={this.updateSearch}
-                value={this.state.search}
-                containerStyle={{backgroundColor: 'white'}}
-                round
-                lightTheme
-                inputStyle={{color: 'black'}}
-            />
+                <Input
+                    placeholder='追加するユーザのIDを入力'
+                    leftIcon={
+                        <Icon
+                        name='search'
+                        size={24}
+                        color='gray'
+                        />
+                    }
+                    onChangeText={this.typesearch}
+                    value={this.state.search}
+                    leftIconContainerStyle={{marginRight: 12}}
+                    errorMessage={this.state.error? 'IDが存在しません' : null}
+                    errorStyle={{color: 'red'}}
+                    //onEndEditing={this.checkUserExist}
+                    onSubmitEditing={this.checkUserExist}
+                />
                 
                 <Container>
                     <Modal
@@ -174,7 +206,6 @@ export default class FriendsScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'red',
     },
     modalContainer: {
         flex: 1,

@@ -1,5 +1,6 @@
 import firebase from 'firebase';
-import firestore from 'firebase/firestore'
+import Firestore from 'firebase/firestore';
+import Storage from 'firebase/storage';
 
 import {
     API_KEY,
@@ -22,6 +23,8 @@ const config = {
 firebase.initializeApp(config);
 
 var db = firebase.firestore();
+var storage = firebase.storage();
 
 exports.firebase = firebase;
 exports.db = db;
+exports.storage = storage;

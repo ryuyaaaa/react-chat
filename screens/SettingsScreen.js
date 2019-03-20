@@ -3,6 +3,7 @@ import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text } from '
 import { Header, SocialIcon } from 'react-native-elements';
 
 const firestore = require('../firebase').db;
+const storage = require('../firebase').storage;
 
 export default class SettingsScreen extends React.Component {
     

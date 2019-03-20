@@ -1,21 +1,9 @@
 import React from 'react';
-import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text, TouchableOpacity, Alert } from 'react-native';
+import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text, Alert } from 'react-native';
 import { Header, SocialIcon } from 'react-native-elements';
 
 const firestore = require('../firebase').db;
 const storage = require('../firebase').storage;
-
-const options = {
-    title: 'アップロード',
-    takePhotoButtonTitle: 'カメラで撮影する',
-    chooseFromLibraryButtonTitle: 'ライブラリから選択する',
-    cancelButtonTitle: 'キャンセル',
-    customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
-};
 
 export default class SettingsScreen extends React.Component {
     
@@ -31,6 +19,7 @@ export default class SettingsScreen extends React.Component {
             switch_facebook: false,
             switch_instagram: false,
             switch_youtube: false,
+            image: '',
         }
     }
 
@@ -46,12 +35,13 @@ export default class SettingsScreen extends React.Component {
     componentDidMount() {
 
         // Firestoreの「users」コレクションを参照
-        this.roomsRef = firestore.collection('users');
+        this.usersRef = firestore.collection('users');
         // Storageを参照
-        this.imageRef = storage.ref();
+        this.imageRef = storage.ref('images/celine-farach.jpg');
+        this.getImage();
 
-        // roomsRefの更新時イベントにonCollectionUpdate登録
-        this.unsubscribe = this.roomsRef.onSnapshot(this.onCollectionUpdate);
+        // usersRefの更新時イベントにonCollectionUpdate登録
+        this.unsubscribe = this.usersRef.onSnapshot(this.onCollectionUpdate);
     }
 
     componentWillunmount() {
@@ -98,34 +88,20 @@ export default class SettingsScreen extends React.Component {
             name: this.state.name,
             comment: this.state.comment,
         }
-        this.roomsRef.doc(this.uid).set(data);
+        this.usersRef.doc(this.uid).set(data);
     }
 
-    showPicker = () => {
-
-        Alert.alert('touch');
-        /*
-        var ImagePicker = require('react-native-image-picker')
-
-        ImagePicker.showImagePicker(options, (response)  => {
-            if (response.didCancel) {
-                Alert.alert('cancel');
-            } else if (response.error) {
-                Alert.alert('error');
-            } else {
-                Alert.alert(response.uri);
-                // console.log(response.uri)
-                // this.setState({image: response.uri})
-            }
+    getImage = () => {
+        this.imageRef.getDownloadURL().then((url) => {
+            this.setState({image: url});
         });
-        */
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Image source={require('../assets/images/celine-farach.jpg')} resizeMode={'center'} style={{flex: 1, width: undefined, height: undefined}}/>
+                    <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
                 </View>
                 <View style={styles.body}>
                     

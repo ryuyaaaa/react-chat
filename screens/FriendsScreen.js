@@ -121,6 +121,8 @@ export default class FriendsScreen extends React.Component {
                     this.setState({modal: true});
                 }
             });
+        } else {
+            this.setState({error: false});
         }
     }
 
@@ -146,7 +148,7 @@ export default class FriendsScreen extends React.Component {
                     leftIconContainerStyle={{marginRight: 12}}
                     errorMessage={this.state.error? 'IDが存在しません' : null}
                     errorStyle={{color: 'red'}}
-                    //onEndEditing={this.checkUserExist}
+                    // onEndEditing={this.checkUserExist}
                     onSubmitEditing={this.checkUserExist}
                 />
                 

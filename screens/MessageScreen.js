@@ -16,16 +16,30 @@ export default class Message extends React.Component {
 
         this.state = {
             messages: [],
-            image: '',
+            image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
 
+    static navigationOptions = ({navigation}) => {
+        return {
+            header: <Header
+                    placement="center"
+                    leftComponent={{ text: '戻る', color: '#fff', onPress: () => navigation.navigate('Main') }}
+                    centerComponent={{ text: '会話', style: { color: '#fff', fontWeight: 'bold' }}}
+                    rightComponent={{ icon: 'add', color: '#fff'}}
+                />,
+        };
+    };
+
+    /*
     static navigationOptions = {
         header: <Header
                     placement="center"
+                    leftComponent={{ text: '戻る', color: '#fff'}}
                     centerComponent={{ text: '会話', style: { color: '#fff' } }}
                 />,
     };
+    */
 
     componentDidMount() {
         // Firestoreの「messages」コレクションを参照

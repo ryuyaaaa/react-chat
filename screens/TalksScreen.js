@@ -18,7 +18,7 @@ export default class LinksScreen extends React.Component {
             messages: [],
             users: [],
             friends: [],
-            image: '',
+            image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
 
@@ -139,7 +139,7 @@ export default class LinksScreen extends React.Component {
             <Container>
                 <Content>
                     <List>
-                        {this.state.rooms.map((room) => {
+                        {this.state.rooms.map((room, i) => {
                             
                             var name = '';
                             var comment = '';
@@ -152,7 +152,7 @@ export default class LinksScreen extends React.Component {
                             });
 
                             return (
-                                <ListItem avatar onPress={() => this._moveToMessage(room.to)}>
+                                <ListItem avatar  key={i} onPress={() => this._moveToMessage(room.to)}>
                                     <Left>
                                         <Thumbnail source={{uri: this.state.image}} />
                                     </Left>

@@ -19,7 +19,7 @@ export default class SettingsScreen extends React.Component {
             switch_facebook: false,
             switch_instagram: false,
             switch_youtube: false,
-            image: '',
+            image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
 
@@ -28,7 +28,7 @@ export default class SettingsScreen extends React.Component {
                     placement="center"
                     leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '設定', style: { color: '#fff', fontWeight: 'bold' }}}
-                    rightComponent={{ icon: 'search', color: '#fff', onPress: () => this.saveProfile() }}
+                    rightComponent={{ icon: 'search', color: '#fff' }}
                 />,
     };
 

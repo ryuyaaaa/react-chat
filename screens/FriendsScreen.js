@@ -20,7 +20,7 @@ export default class FriendsScreen extends React.Component {
             modal: false,
             search: '',
             error: false,
-            image: '',
+            image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
     
@@ -32,6 +32,7 @@ export default class FriendsScreen extends React.Component {
                     rightComponent={{ icon: 'add', color: '#fff'}}
                 />,
     };
+    
 
     componentDidMount() {
         // Firestoreの「friends」コレクションを参照
@@ -178,7 +179,7 @@ export default class FriendsScreen extends React.Component {
                     </Modal> */}
                     <Content>
                         <List>                          
-                            {this.state.friends.map((friend) => {
+                            {this.state.friends.map((friend, i) => {
 
                                 var name = '';
                                 var comment = '';
@@ -191,7 +192,7 @@ export default class FriendsScreen extends React.Component {
                                 });
 
                                 return (
-                                    <ListItem thumbnail>
+                                    <ListItem thumbnail key={i}>
                                         <Left>
                                             <Thumbnail avatar source={{uri: this.state.image}} />
                                         </Left>

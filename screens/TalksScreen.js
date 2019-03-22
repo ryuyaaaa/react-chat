@@ -169,7 +169,7 @@ export default class LinksScreen extends React.Component {
                     </List>
                 </Content>
 
-                <Button title='追加' onPress={() => {this.addTalkRoom('gucci@gmail.com')}}/>
+                {/* <Button title='追加' onPress={() => {this.addTalkRoom('gucci@gmail.com')}}/> */}
             </Container>
             
         );

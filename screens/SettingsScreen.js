@@ -107,10 +107,10 @@ export default class SettingsScreen extends React.Component {
                     
                     <View style={styles.info}>
                         <View style={{width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0'}}>
+                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                 <Text style={{fontSize: 16, color: 'white'}}>名前</Text>
                             </View>
-                            <View style={{}}>
+                            <View style={{margin: 8}}>
                                 <TextInput
                                     style={styles.input}
                                     placeholder='---NAME---'
@@ -122,7 +122,7 @@ export default class SettingsScreen extends React.Component {
                         </View>
                     
                         <View style={{width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0'}}>
+                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                 <Text style={{fontSize: 16, color: 'white'}}>ひとこと</Text>
                             </View>
                             <View style={{}}>

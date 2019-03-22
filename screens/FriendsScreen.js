@@ -1,8 +1,9 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Modal, View, TextInput, Alert } from 'react-native';
+import { AsyncStorage, StyleSheet, View, TextInput, Alert } from 'react-native';
 import { Header, Input } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Modal from "react-native-modal";
 
 const firestore = require('../firebase').db;
 const storage = require('../firebase').storage;
@@ -40,6 +41,9 @@ export default class FriendsScreen extends React.Component {
 
         // Firestoreの「users」コレクションを参照
         this.usersRef = firestore.collection('users');
+
+        // Firestoreの「rooms」コレクションを参照
+        this.roomsRef = firestore.collection('rooms');
 
         // Storageのプロフィール画像を参照
         this.imageRef = storage.ref('images/celine-farach.jpg');
@@ -125,7 +129,8 @@ export default class FriendsScreen extends React.Component {
             }).then(() => {
                 this.setState({error: error});
                 if (!error) {
-                    this.addFriend(searchId);
+                    this.setState({modal: true});
+                    //this.addFriend(searchId);
                 }
             });
         } else {
@@ -141,6 +146,15 @@ export default class FriendsScreen extends React.Component {
         this.imageRef.getDownloadURL().then((url) => {
             this.setState({image: url});
         });
+    }
+
+    addTalkRoom = (to) => {
+        // Firestoreのコレクションに追加
+        var data = {
+            from: this.uid,
+            to: to,
+        }
+        this.roomsRef.add(data);
     }
 
     render() {
@@ -164,19 +178,16 @@ export default class FriendsScreen extends React.Component {
                     // onEndEditing={this.checkUserExist}
                     onSubmitEditing={this.checkUserExist}
                 />
+
+                <Modal
+                    isVisible={this.state.modal}
+                    onBackdropPress={() => this.setState({ modal: false })}>
+                    <View style={styles.modalContainer}>
+                        <Thumbnail avatar source={{uri: this.state.image}} />
+                    </View>
+                </Modal>
                 
                 <Container>
-                    
-                    {/* <Modal
-                        animationType='fade'
-                        transparent={true}
-                        visible={this.state.modal}
-                        onRequestClose={() => this.closeModal}>
-                    
-                        <View style={styles.modalContainer}>
-                            <Text>test</Text>
-                        </View>
-                    </Modal> */}
                     <Content>
                         <List>                          
                             {this.state.friends.map((friend, i) => {
@@ -201,11 +212,11 @@ export default class FriendsScreen extends React.Component {
                                             <Text note numberOfLines={1}>{comment}</Text>
                                         </Body>
                                         <Right>
-                                            <Button transparent>
-                                                <Text>View</Text>
+                                            <Button transparent onPress={() => this.addTalkRoom(friend.to)}>
+                                                <Text>会話に追加する</Text>
                                             </Button>
                                         </Right>
-                                    </ListItem> 
+                                    </ListItem>
                                 );   
                             })}
                         </List>
@@ -221,6 +232,6 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: 'green',
     },
 });

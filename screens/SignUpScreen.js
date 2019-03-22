@@ -124,6 +124,7 @@ export default class LogInScreen extends React.Component {
     setUidToStorage = async(uid) => {
         try {
             await AsyncStorage.setItem('uid', uid);
+            this.props.navigation.navigate('Main');
         } catch(error) {
             console.log(error);
         }

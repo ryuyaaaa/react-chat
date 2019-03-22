@@ -1,9 +1,10 @@
 import React from 'react';
-import { AsyncStorage, Button, StyleSheet } from 'react-native';
+import { AsyncStorage, Button, StyleSheet, Alert } from 'react-native';
 import { Header } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
 
 const firestore = require('../firebase').db;
+const storage = require('../firebase').storage;
 
 export default class LinksScreen extends React.Component {
 
@@ -14,6 +15,10 @@ export default class LinksScreen extends React.Component {
 
         this.state = {
             rooms: [],
+            messages: [],
+            users: [],
+            friends: [],
+            image: '',
         }
     }
 
@@ -29,18 +34,36 @@ export default class LinksScreen extends React.Component {
     componentDidMount() {
         // Firestoreの「rooms」コレクションを参照
         this.roomsRef = firestore.collection('rooms');
+
+        // Firestoreの「messages」コレクションを参照
+        this.usersRef = firestore.collection('users');
+
+        // Firestoreの「friends」コレクションを参照
+        this.friendsRef = firestore.collection('friends');
+
+        // Storageのプロフィール画像を参照
+        this.imageRef = storage.ref('images/celine-farach.jpg');
+        this.getImage();
     
         // roomsRefの更新時イベントにonCollectionUpdate登録
-        this.unsubscribe = this.roomsRef.onSnapshot(this.onCollectionUpdate);
+        this.unsubscribeRooms = this.roomsRef.onSnapshot(this.onRoomsCollectionUpdate);
+
+        // messagesRefの更新時イベントにonCollectionUpdate登録
+        this.unsubscribeUsers = this.usersRef.onSnapshot(this.onUsersCollectionUpdate);
+
+        // friendsRefの更新時イベントにonCollectionUpdate登録
+        this.unsubscribeFriends = this.friendsRef.onSnapshot(this.onFriendsCollectionUpdate);
     }
 
     componentWillunmount() {
         // onCollectionUpdateの登録解除
-        this.unsubscribe();
+        this.unsubscribeRooms();
+        this.unsubscribeUsers();
+        this.unsubscribeFriends();
     }
 
-    // firestoreのコレクションが更新された時のイベント
-    onCollectionUpdate = (querySnapshot) => {
+    // firestoreのroomsコレクションが更新された時のイベント
+    onRoomsCollectionUpdate = (querySnapshot) => {
 
         var rooms = [];
         querySnapshot.docs.forEach((doc) => {
@@ -51,6 +74,32 @@ export default class LinksScreen extends React.Component {
     
         // roomsをstateに渡す
         this.setState({ rooms: rooms });
+    }
+
+    // firestoreのusersコレクションが更新された時のイベント
+    onUsersCollectionUpdate = (querySnapshot) => {
+
+        var users = [];
+        querySnapshot.docs.forEach((doc) => {
+            users.push(doc.data());
+        });
+    
+        // roomsをstateに渡す
+        this.setState({ users: users });
+    }
+
+    // firestoreのFriendsコレクションが更新された時のイベント
+    onFriendsCollectionUpdate = (querySnapshot) => {
+
+        var friends = [];
+        querySnapshot.docs.forEach((doc) => {
+            if (doc.data().from == this.uid) {
+                friends.push(doc.data());
+            }
+        });
+    
+        // roomsをstateに渡す
+        this.setState({ friends: friends });
     }
 
     addTalkRoom = (to) => {
@@ -79,31 +128,48 @@ export default class LinksScreen extends React.Component {
         this.props.navigation.navigate('Message');
     }
 
+    getImage = () => {
+        this.imageRef.getDownloadURL().then((url) => {
+            this.setState({image: url});
+        });
+    }
+
     render() {
         return ( 
             <Container>
                 <Content>
                     <List>
-                        {this.state.rooms.map((room) =>
+                        {this.state.rooms.map((room) => {
                             
-                            <ListItem avatar onPress={() => this._moveToMessage(room.to)}>
-                                <Left>
-                                    <Thumbnail source={require('../assets/images/celine-farach.jpg')} />
-                                </Left>
-                                <Body>
-                                    <Text>{room.to}</Text>
-                                    <Text note>I love Ryuya.......</Text>
-                                </Body>
-                                <Right>
-                                    <Text note>3:43 pm</Text>
-                                </Right>
-                            </ListItem>
-                            
-                        )}
+                            var name = '';
+                            var comment = '';
+
+                            this.state.users.forEach((user) => {
+                                if (room.to == user._id) {
+                                    name = user.name;
+                                    comment = user.comment;
+                                }
+                            });
+
+                            return (
+                                <ListItem avatar onPress={() => this._moveToMessage(room.to)}>
+                                    <Left>
+                                        <Thumbnail source={{uri: this.state.image}} />
+                                    </Left>
+                                    <Body>
+                                        <Text>{name}</Text>
+                                        <Text note>Doing what you like will always keep you happy . .</Text>
+                                    </Body>
+                                    <Right>
+                                        <Text note>3:43 pm</Text>
+                                    </Right>
+                                </ListItem>
+                            );
+                        })}
                     </List>
                 </Content>
 
-                <Button title='追加' onPress={() => {this.addTalkRoom('aaa@gmail.com')}}/>
+                <Button title='追加' onPress={() => {this.addTalkRoom('gucci@gmail.com')}}/>
             </Container>
             
         );

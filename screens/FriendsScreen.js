@@ -1,10 +1,11 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, Button, Modal, View, TextInput, Alert } from 'react-native';
+import { AsyncStorage, StyleSheet, Modal, View, TextInput, Alert } from 'react-native';
 import { Header, Input } from 'react-native-elements';
-import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const firestore = require('../firebase').db;
+const storage = require('../firebase').storage;
 
 export default class FriendsScreen extends React.Component {
 
@@ -19,6 +20,7 @@ export default class FriendsScreen extends React.Component {
             modal: false,
             search: '',
             error: false,
+            image: '',
         }
     }
     
@@ -37,6 +39,11 @@ export default class FriendsScreen extends React.Component {
 
         // Firestoreの「users」コレクションを参照
         this.usersRef = firestore.collection('users');
+
+        // Storageのプロフィール画像を参照
+        this.imageRef = storage.ref('images/celine-farach.jpg');
+
+        this.getImage();
     
         // friendsRefの更新時イベントにonCollectionUpdate登録
         this.unsubscribeFriends = this.friendsRef.onSnapshot(this.onFriendsCollectionUpdate);
@@ -116,9 +123,8 @@ export default class FriendsScreen extends React.Component {
                 });
             }).then(() => {
                 this.setState({error: error});
-
                 if (!error) {
-                    this.setState({modal: true});
+                    this.addFriend(searchId);
                 }
             });
         } else {
@@ -128,6 +134,12 @@ export default class FriendsScreen extends React.Component {
 
     typesearch = (text) => {
         this.setState({search: text});
+    }
+
+    getImage = () => {
+        this.imageRef.getDownloadURL().then((url) => {
+            this.setState({image: url});
+        });
     }
 
     render() {
@@ -153,7 +165,8 @@ export default class FriendsScreen extends React.Component {
                 />
                 
                 <Container>
-                    <Modal
+                    
+                    {/* <Modal
                         animationType='fade'
                         transparent={true}
                         visible={this.state.modal}
@@ -162,44 +175,40 @@ export default class FriendsScreen extends React.Component {
                         <View style={styles.modalContainer}>
                             <Text>test</Text>
                         </View>
-                    </Modal>
+                    </Modal> */}
                     <Content>
-                        <List>
-                            {/*                         
-                            {this.state.friends.map((friend) => 
-                                <ListItem thumbnail>
-                                    <Left>
-                                        <Thumbnail avatar source={require('../assets/images/celine-farach.jpg')} />
-                                    </Left>
-                                    <Body>
-                                        <Text>Sankhadeep</Text>
-                                        <Text note numberOfLines={1}>Its time to build a difference . .</Text>
-                                    </Body>
-                                    <Right>
-                                        <Button transparent>
-                                            <Text>View</Text>
-                                        </Button>
-                                    </Right>
-                                </ListItem>    
-                            )} */}
-                            {/*                         
-                            <ListItem thumbnail>
-                                <Left>
-                                    <Thumbnail avatar source={require('../assets/images/celine-farach.jpg')} />
-                                </Left>
-                                <Body>
-                                    <Text>Sankhadeep</Text>
-                                    <Text note numberOfLines={1}>Its time to build a difference . .</Text>
-                                </Body>
-                                <Right>
-                                    <Button transparent>
-                                        <Text>View</Text>
-                                    </Button>
-                                </Right>
-                            </ListItem> */}
+                        <List>                          
+                            {this.state.friends.map((friend) => {
+
+                                var name = '';
+                                var comment = '';
+
+                                this.state.users.forEach((user) => {
+                                    if (user._id == friend.to) {
+                                        name = user.name;
+                                        comment = user.comment;
+                                    }
+                                });
+
+                                return (
+                                    <ListItem thumbnail>
+                                        <Left>
+                                            <Thumbnail avatar source={{uri: this.state.image}} />
+                                        </Left>
+                                        <Body>
+                                            <Text>{name}</Text>
+                                            <Text note numberOfLines={1}>{comment}</Text>
+                                        </Body>
+                                        <Right>
+                                            <Button transparent>
+                                                <Text>View</Text>
+                                            </Button>
+                                        </Right>
+                                    </ListItem> 
+                                );   
+                            })}
                         </List>
-                    </Content> 
-                    <Button title='push' onPress={() => {this.addFriend('bbb@gmail.com')}}/>  
+                    </Content>
                 </Container>
             </View>
         );

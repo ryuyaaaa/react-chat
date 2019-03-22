@@ -106,31 +106,34 @@ export default class SettingsScreen extends React.Component {
                 <View style={styles.body}>
                     
                     <View style={styles.info}>
-                        <View style={{flex: 1, width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                        <View style={{width: '100%'}}>
+                            <View style={{backgroundColor: '#c0c0c0'}}>
                                 <Text style={{fontSize: 16, color: 'white'}}>名前</Text>
                             </View>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='---NAME---'
-                                value={this.state.name}
-                                onChangeText={this.typeName}
-                                onEndEditing={this.saveProfile}
-                            />
+                            <View style={{}}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='---NAME---'
+                                    value={this.state.name}
+                                    onChangeText={this.typeName}
+                                    onEndEditing={this.saveProfile}
+                                />
+                            </View>
                         </View>
                     
-                        <View style={{flex: 1, width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                        <View style={{width: '100%'}}>
+                            <View style={{backgroundColor: '#c0c0c0'}}>
                                 <Text style={{fontSize: 16, color: 'white'}}>ひとこと</Text>
                             </View>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='---COMMENT---'
-                                value={this.state.comment}
-                                onChangeText={this.typeComment}
-                                onEndEditing={this.saveProfile}
-                            />
-
+                            <View style={{}}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='---COMMENT---'
+                                    value={this.state.comment}
+                                    onChangeText={this.typeComment}
+                                    onEndEditing={this.saveProfile}
+                                />
+                            </View>
                         </View>
                     </View>
 
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
     },
     header: {
-        flex: 1,
+        flex: 0.7,
         // backgroundColor: 'blue',
     },
     body: {

@@ -2,8 +2,10 @@ import React from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Button, Alert } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Header } from 'react-native-elements';
+import v4 from 'uuid/v4';
 
 const firestore = require('../firebase').db;
+const storage = require('../firebase').storage;
 
 export default class Message extends React.Component {
 
@@ -14,6 +16,7 @@ export default class Message extends React.Component {
 
         this.state = {
             messages: [],
+            image: '',
         }
     }
 
@@ -27,6 +30,10 @@ export default class Message extends React.Component {
     componentDidMount() {
         // Firestoreの「messages」コレクションを参照
         this.ref = firestore.collection('messages');
+
+        // Storageのプロフィール画像を参照
+        this.imageRef = storage.ref('images/celine-farach.jpg');
+        this.getImage();
 
         // refの更新時イベントにonCollectionUpdate登録
         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
@@ -42,7 +49,7 @@ export default class Message extends React.Component {
         // Firestoreのコレクションに追加
         messages.forEach((message) => {
             var data = message;
-            data._id = this.toUid;
+            data.to_id = this.toUid;
             data.createdAt = message.createdAt.toISOString();
             this.ref.add(data);
         });
@@ -53,23 +60,20 @@ export default class Message extends React.Component {
         
         var messages = [];
         querySnapshot.docs.forEach((doc) => {    
-            if (doc.data().user._id == this.uid || doc.data().user._id == this.toUid) {
+            if ((doc.data().user._id == this.uid && doc.data().to_id == this.toUid) || (doc.data().user._id == this.toUid && doc.data().to_id == this.uid)) {
                 messages.push(doc.data());
             }
         });
 
-        // docsのdataをmessagesとして取得
-        /*
-        const messages = querySnapshot.docs.map((doc) => {
-            if (doc.data() == this.uid) {
-                return doc.data();    
-            }
-        });
-        */
+        messages.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            if (a.createdAt > b.createdAt) return -1;
+            return 0;
+        })
     
         //this.state.messages.concat(messages);
         // messagesをstateに渡す
-        this.setState({ messages });
+        this.setState({ messages: messages });
     }
 
     _getInfo = async() => {
@@ -80,7 +84,16 @@ export default class Message extends React.Component {
             console.log(error);
         }
     }
-  
+
+    getImage = () => {
+        this.imageRef.getDownloadURL().then((url) => {
+            this.setState({image: url});
+        });
+    }
+
+    generateId = () => {
+        return v4();
+    }  
     render() {
         return (
             <GiftedChat
@@ -89,8 +102,9 @@ export default class Message extends React.Component {
                 user={{
                     _id: this.uid,
                     name: 'ryuya',
-                    avatar: 'https://pbs.twimg.com/media/CsKCw7WVIAA-Ebe.jpg'
+                    avatar: this.state.image,
                 }}
+                messageIdGenerator={this.generateId}
             />
         );
     }

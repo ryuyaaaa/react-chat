@@ -129,8 +129,8 @@ export default class FriendsScreen extends React.Component {
             }).then(() => {
                 this.setState({error: error});
                 if (!error) {
-                    this.setState({modal: true});
-                    //this.addFriend(searchId);
+                    //this.setState({modal: true});
+                    this.addFriend(searchId);
                 }
             });
         } else {

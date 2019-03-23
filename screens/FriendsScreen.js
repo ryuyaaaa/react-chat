@@ -91,6 +91,7 @@ export default class FriendsScreen extends React.Component {
 
     _getUid = async() => {
         try {
+            //await AsyncStorage.removeItem('uid');
             this.uid = await AsyncStorage.getItem('uid');
         } catch(error) {
             console.log(error);

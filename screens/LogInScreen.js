@@ -104,9 +104,11 @@ export default class LogInScreen extends React.Component {
             }),
         })
         .then((response) => {
-            response.json().then((json) => {
 
-                if (json.uid != null) {
+            var statusCode = response.status;
+
+            response.json().then((json) => {
+                if (json.uid != null && statusCode == 200) {
                     this.setUidToStorage(json.uid);
                     this.props.navigation.navigate('Main');
                 } else {
@@ -114,7 +116,6 @@ export default class LogInScreen extends React.Component {
                 }
             });          
         });
-        
     }
 
     closeModal = () => {

@@ -14,16 +14,16 @@ const SignUpStack = createStackNavigator({SignUp: SignUpScreen});
 const MessageStack = createStackNavigator({Message: MessageScreen});
 
 export default createAppContainer(createSwitchNavigator(
-  {
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-    AuthLoading: AuthLoadingStack,
-    LogIn: LogInStack,
-    SignUp: SignUpStack,
-    Message: MessageStack,
-  },
-  {
-    initialRouteName: 'AuthLoading',
-  }
+    {
+        // You could add another route here for authentication.
+        // Read more at https://reactnavigation.org/docs/en/auth-flow.html
+        Main: MainTabNavigator,
+        AuthLoading: AuthLoadingStack,
+        LogIn: LogInStack,
+        SignUp: SignUpStack,
+        Message: MessageStack,
+    },
+    {
+        initialRouteName: 'AuthLoading',
+    }
 ));

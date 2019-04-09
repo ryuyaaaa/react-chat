@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add react-native-divider
+  /usr/local/bin/node /usr/local/bin/yarn start
 
 PATH: 
-  /home/ryuya/.pyenv/shims:/home/ryuya/.pyenv/bin:/home/ryuya/.pyenv/shims:/home/ryuya/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/iCLS:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/iCLS:/mnt/c/Windows/System32:/mnt/c/Windows:/mnt/c/Windows/System32/wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32/OpenSSH:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/IPT:/mnt/c/Program Files/Intel/WiFi/bin:/mnt/c/Program Files/Common Files/Intel/WirelessCommon:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/ryuya/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/ryuya/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin
+  /home/ryuya/.pyenv/shims:/home/ryuya/.pyenv/bin:/home/ryuya/.pyenv/shims:/home/ryuya/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Windows/System32:/mnt/c/Windows:/mnt/c/Windows/System32/wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32/OpenSSH:/mnt/c/Program Files/Intel/WiFi/bin:/mnt/c/Program Files/Common Files/Intel/WirelessCommon:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Users/ryuya/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/ryuya/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/ryuya/AppData/Local/GitHubDesktop/bin:/snap/bin
 
 Yarn version: 
   1.13.0
@@ -14,11 +14,17 @@ Platform:
   linux x64
 
 Trace: 
-  Error: ENOENT: no such file or directory, scandir '/mnt/c/Users/ryuya/Desktop/node/react-chat/node_modules/lottie-react-native/src/android/build/tmp/expandedArchives/classes.jar_8mq6mkkdelghg9kgn77q7lrfa/com/facebook/datasource'
+  SyntaxError: /mnt/c/Users/ryuya/Desktop/node/react-chat/package.json: Unexpected token / in JSON at position 4
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:304:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:315:13
 
 npm manifest: 
   {
-    "main": "node_modules/expo/AppEntry.js",
+    // "main": "node_modules/expo/AppEntry.js",
+    "main": "App.js",
     "scripts": {
       "start": "expo start",
       "android": "expo start --android",
@@ -41,8 +47,11 @@ npm manifest:
       "react-native-dotenv": "^0.2.0",
       "react-native-elements": "^1.1.0",
       "react-native-gifted-chat": "^0.7.2",
+      "react-native-image-picker": "^0.28.0",
+      "react-native-modal": "^9.0.0",
       "react-native-textinput-effects": "^0.5.1",
-      "react-navigation": "^3.0.9"
+      "react-navigation": "^3.0.9",
+      "uuid": "^3.3.2"
     },
     "devDependencies": {
       "babel-preset-expo": "^5.0.0",
@@ -6273,6 +6282,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
     integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
   
+  react-native-animatable@^1.2.4:
+    version "1.3.2"
+    resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.2.tgz#4783ee1a73dc98815aef234ce6b819f80bfe7d80"
+    integrity sha512-rmah3KQ63ft8DxkzFUwJSuZeq+oSYwldoGF4DTOR5WM2WR5wiWLgBAtrAHlI3Di3by323uOR21s+MlqPcHz2Kw==
+    dependencies:
+      prop-types "^15.5.10"
+  
   react-native-branch@2.2.5:
     version "2.2.5"
     resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.2.5.tgz#4074dd63b4973e6397d9ce50e97b57c77a518e9d"
@@ -6340,6 +6356,11 @@ Lockfile:
       react-native-video "^3.2.1"
       uuid "3.3.0"
   
+  react-native-image-picker@^0.28.0:
+    version "0.28.0"
+    resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.28.0.tgz#e3f26df170ea932e9c0404624fbced2f59a300e3"
+    integrity sha512-lQfdOyC1mQ/pvfEaUGdoodO1A1clg9kf6YC1WdbWhA6XK+joBd9GQYf8SaCf6/7vM25U4ib+6ux4yvnrS1pOqQ==
+  
   react-native-iphone-x-helper@^1.0.3:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.0.tgz#9f8a376eb00bc712115abff4420318a0063fa796"
@@ -6360,9 +6381,17 @@ Lockfile:
     dependencies:
       prop-types "^15.5.10"
   
-  "react-native-maps@github:expo/react-native-maps#v0.22.1-exp.0":
+  react-native-maps@expo/react-native-maps#v0.22.1-exp.0:
     version "0.22.1"
     resolved "https://codeload.github.com/expo/react-native-maps/tar.gz/e6f98ff7272e5d0a7fe974a41f28593af2d77bb2"
+  
+  react-native-modal@^9.0.0:
+    version "9.0.0"
+    resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-9.0.0.tgz#0bfd0770361a2e5c6e0072bfdb0f1277f9662dba"
+    integrity sha512-j4xeIK9noHU/ksp2Ndc8NI1qJvjApToqGvqLEu2wtYeaISanbhtd0S3V4hZkSlCa3DZtegl6aaMZBLeH1q6xfA==
+    dependencies:
+      prop-types "^15.6.2"
+      react-native-animatable "^1.2.4"
   
   react-native-parsed-text@^0.0.20:
     version "0.0.20"

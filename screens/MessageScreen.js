@@ -24,7 +24,7 @@ export default class Message extends React.Component {
         return {
             header: <Header
                     placement="center"
-                    leftComponent={{ text: '戻る', color: '#fff', onPress: () => navigation.navigate('Main') }}
+                    leftComponent={{ text: '戻る', color: '#fff', onPress: () => navigation.goBack() }}
                     centerComponent={{ text: '会話', style: { color: '#fff', fontWeight: 'bold' }}}
                     rightComponent={{ icon: 'add', color: '#fff'}}
                 />,

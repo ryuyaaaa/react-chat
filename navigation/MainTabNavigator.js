@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import FriendsScreen from '../screens/FriendsScreen';
 import TalksScreen from '../screens/TalksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import MessageScreen from '../screens/MessageScreen'
 
 const FriendsStack = createStackNavigator({
   Friends: FriendsScreen,
@@ -27,6 +28,7 @@ FriendsStack.navigationOptions = {
 
 const TalksStack = createStackNavigator({
   Talks: TalksScreen,
+  Message: MessageScreen,
 });
 
 TalksStack.navigationOptions = {

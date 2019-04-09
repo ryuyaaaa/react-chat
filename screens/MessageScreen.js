@@ -42,6 +42,7 @@ export default class Message extends React.Component {
     */
 
     componentDidMount() {
+
         // Firestoreの「messages」コレクションを参照
         this.ref = firestore.collection('messages');
 

@@ -67,9 +67,12 @@ export default class FriendsScreen extends React.Component {
     onFriendsCollectionUpdate = (querySnapshot) => {
 
         var friends = [];
+        var friends_id = [];
+
         querySnapshot.docs.forEach((doc) => {
-            if (doc.data().from == this.uid) {
+            if (doc.data().from == this.uid && !friends_id.includes(doc.data().to)) {
                 friends.push(doc.data());
+                friends_id.push(doc.data().to);
             }
         });
     

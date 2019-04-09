@@ -66,9 +66,12 @@ export default class LinksScreen extends React.Component {
     onRoomsCollectionUpdate = (querySnapshot) => {
 
         var rooms = [];
+        var rooms_id = [];
+
         querySnapshot.docs.forEach((doc) => {
-            if (doc.data().from == this.uid) {
+            if (doc.data().from == this.uid && !rooms_id.includes(doc.data().to)) {
                 rooms.push(doc.data());
+                rooms_id.push(doc.data().to);
             }
         });
     
@@ -100,15 +103,6 @@ export default class LinksScreen extends React.Component {
     
         // roomsをstateに渡す
         this.setState({ friends: friends });
-    }
-
-    addTalkRoom = (to) => {
-        // Firestoreのコレクションに追加
-        var data = {
-            from: this.uid,
-            to: to,
-        }
-        this.roomsRef.add(data);
     }
 
     _getUid = async() => {
@@ -168,8 +162,6 @@ export default class LinksScreen extends React.Component {
                         })}
                     </List>
                 </Content>
-
-                {/* <Button title='追加' onPress={() => {this.addTalkRoom('gucci@gmail.com')}}/> */}
             </Container>
             
         );

@@ -6,7 +6,7 @@ import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text 
 const firestore = require('../firebase').db;
 const storage = require('../firebase').storage;
 
-export default class LinksScreen extends React.Component {
+export default class TalksScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -18,6 +18,7 @@ export default class LinksScreen extends React.Component {
             messages: [],
             users: [],
             friends: [],
+            messages: {},
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
@@ -41,6 +42,9 @@ export default class LinksScreen extends React.Component {
         // Firestoreの「friends」コレクションを参照
         this.friendsRef = firestore.collection('friends');
 
+        // Firestoreの「messages」コレクションを参照
+        this.messagesRef = firestore.collection('messages');
+
         // Storageのプロフィール画像を参照
         this.imageRef = storage.ref('images/celine-farach.jpg');
         this.getImage();
@@ -53,6 +57,9 @@ export default class LinksScreen extends React.Component {
 
         // friendsRefの更新時イベントにonCollectionUpdate登録
         this.unsubscribeFriends = this.friendsRef.onSnapshot(this.onFriendsCollectionUpdate);
+
+        // messagesRefの更新時イベントにonCollectionUpdate登録
+        this.unsubscribeMessages = this.messagesRef.onSnapshot(this.onMessagesCollectionUpdate);
     }
 
     componentWillunmount() {
@@ -60,6 +67,7 @@ export default class LinksScreen extends React.Component {
         this.unsubscribeRooms();
         this.unsubscribeUsers();
         this.unsubscribeFriends();
+        this.unsubscribeMessages();
     }
 
     // firestoreのroomsコレクションが更新された時のイベント
@@ -105,6 +113,48 @@ export default class LinksScreen extends React.Component {
         this.setState({ friends: friends });
     }
 
+    // firestoreのコレクションが更新された時のイベント
+    onMessagesCollectionUpdate = (querySnapshot) => {
+        
+        var messages = {};
+        querySnapshot.docs.forEach((doc) => {    
+
+            // 自分が送ったメッセージまたは自分あてのメッセージを取得
+            if (doc.data().user._id == this.uid) {
+                if (!(doc.data().to_id in messages)) {
+                    messages[doc.data().to_id] = []; 
+                }
+                messages[doc.data().to_id].push(doc.data());
+            } else if (doc.data().to_id == this.uid) {
+                if (!(doc.data().user._id in messages)) {
+                    messages[doc.data().user._id] = [];
+                    
+                }
+                messages[doc.data().user._id].push(doc.data());
+            }
+            // if ((doc.data().user._id == this.uid && doc.data().to_id == this.toUid) || (doc.data().user._id == this.toUid && doc.data().to_id == this.uid)) {
+            //     messages.push(doc.data());
+            // }
+        });
+
+        for (var key in messages) {
+            messages[key].sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                if (a.createdAt > b.createdAt) return -1;
+                return 0;
+            });
+        }
+
+        // messages.sort((a, b) => {
+        //     if (a.createdAt < b.createdAt) return 1;
+        //     if (a.createdAt > b.createdAt) return -1;
+        //     return 0;
+        // });
+    
+        // messagesをstateに渡す
+        this.setState({ messages: messages });
+    }
+
     _getUid = async() => {
         try {
             this.uid = await AsyncStorage.getItem('uid');
@@ -114,12 +164,20 @@ export default class LinksScreen extends React.Component {
     }
 
     _moveToMessage = async(to) => {
+        var messages = [];
         try {
             await AsyncStorage.setItem('messageTo', to);
         } catch(error) {
             console.log(error);
         }
-        this.props.navigation.navigate('Message');
+        this.messagesRef.get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                if ((doc.data().user._id == this.uid && doc.data().to_id == to) || (doc.data().user._id == to && doc.data().to_id == this.uid)) {
+                    messages.push(doc.data());
+                }
+            });
+        });
+        this.props.navigation.navigate('Message', {messages: messages});
     }
 
     getImage = () => {
@@ -136,26 +194,34 @@ export default class LinksScreen extends React.Component {
                         {this.state.rooms.map((room, i) => {
                             
                             var name = '';
-                            var comment = '';
+                            var lastMessage = '';
+                            var lastCreatedAt = '';
 
                             this.state.users.forEach((user) => {
                                 if (room.to == user._id) {
                                     name = user.name;
-                                    comment = user.comment;
                                 }
                             });
 
+                            for (var key in this.state.messages) {
+                                if (room.to == key) {
+                                    lastMessage = this.state.messages[key][0].text;
+                                    lastCreatedAt = this.state.messages[key][0].createdAt;
+                                }
+                            }
+
                             return (
-                                <ListItem avatar  key={i} onPress={() => this._moveToMessage(room.to)}>
+                                <ListItem avatar key={i} onPress={() => this._moveToMessage(room.to)}>
                                     <Left>
                                         <Thumbnail source={{uri: this.state.image}} />
                                     </Left>
                                     <Body>
                                         <Text>{name}</Text>
-                                        <Text note>Doing what you like will always keep you happy . .</Text>
+                                        {/* <Text note>Doing what you like will always keep you happy . .</Text> */}
+                                        <Text note style={{flex: 1, marginTop: 5}}>{lastMessage.substr(0,34)}</Text>
                                     </Body>
                                     <Right>
-                                        <Text note>3:43 pm</Text>
+                                        <Text note>{Number(lastCreatedAt.substr(11,2))+9 + lastCreatedAt.substr(13,3)}</Text>
                                     </Right>
                                 </ListItem>
                             );

@@ -15,7 +15,7 @@ export default class Message extends React.Component {
         this._getInfo();
 
         this.state = {
-            messages: [],
+            messages: this.props.navigation.state.params.messages,
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
@@ -44,19 +44,19 @@ export default class Message extends React.Component {
     componentDidMount() {
 
         // Firestoreの「messages」コレクションを参照
-        this.ref = firestore.collection('messages');
+        this.messagesRef = firestore.collection('messages');
 
         // Storageのプロフィール画像を参照
         this.imageRef = storage.ref('images/celine-farach.jpg');
         this.getImage();
 
-        // refの更新時イベントにonCollectionUpdate登録
-        this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+        // messagesRefの更新時イベントにonCollectionUpdate登録
+        this.unsubscribeMessages = this.messagesRef.onSnapshot(this.onMessagesCollectionUpdate);
     }
 
     componentWillunmount() {
         // onCollectionUpdateの登録解除
-        this.unsubscribe();
+        this.unsubscribeMessages();
     }
 
     onSend = (messages = []) => {
@@ -66,12 +66,12 @@ export default class Message extends React.Component {
             var data = message;
             data.to_id = this.toUid;
             data.createdAt = message.createdAt.toISOString();
-            this.ref.add(data);
+            this.messagesRef.add(data);
         });
     }
 
     // firestoreのコレクションが更新された時のイベント
-    onCollectionUpdate = (querySnapshot) => {
+    onMessagesCollectionUpdate = (querySnapshot) => {
         
         var messages = [];
         querySnapshot.docs.forEach((doc) => {    
@@ -84,9 +84,8 @@ export default class Message extends React.Component {
             if (a.createdAt < b.createdAt) return 1;
             if (a.createdAt > b.createdAt) return -1;
             return 0;
-        })
+        });
     
-        //this.state.messages.concat(messages);
         // messagesをstateに渡す
         this.setState({ messages: messages });
     }
@@ -108,7 +107,8 @@ export default class Message extends React.Component {
 
     generateId = () => {
         return v4();
-    }  
+    }
+
     render() {
         return (
             <GiftedChat

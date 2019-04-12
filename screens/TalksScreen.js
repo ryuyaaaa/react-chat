@@ -171,7 +171,7 @@ export default class TalksScreen extends React.Component {
             console.log(error);
         }
         */
-        this.props.navigation.navigate('Message', {toUid: to});
+        this.props.navigation.navigate('Message', {uid: this.uid, toUid: to});
     }
 
     getImage = () => {

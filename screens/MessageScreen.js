@@ -9,10 +9,10 @@ const storage = require('../firebase').storage;
 
 export default class Message extends React.Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
-
-        this._getUid();
 
         this.state = {
             messages: [],
@@ -43,6 +43,8 @@ export default class Message extends React.Component {
 
     componentDidMount() {
 
+        this._isMounted = true;
+
         // Firestoreの「messages」コレクションを参照
         this.messagesRef = firestore.collection('messages');
 
@@ -50,6 +52,7 @@ export default class Message extends React.Component {
         this.imageRef = storage.ref('images/celine-farach.jpg');
         this.getImage();
 
+        this.uid = this.props.navigation.getParam('uid', null);
         this.toUid = this.props.navigation.getParam('toUid', null);
 
         // messagesRefの更新時イベントにonCollectionUpdate登録
@@ -57,6 +60,7 @@ export default class Message extends React.Component {
     }
 
     componentWillunmount() {
+        this._isMounted = false;
         // onCollectionUpdateの登録解除
         this.unsubscribe();
     }
@@ -89,9 +93,12 @@ export default class Message extends React.Component {
         });
     
         // messagesをstateに渡す
-        this.setState({ messages: messages });
+        if (this._isMounted) {
+            this.setState({ messages: messages });
+        }
     }
 
+    /*
     _getUid = async() => {
         try {
             this.uid = await AsyncStorage.getItem('uid');
@@ -99,10 +106,13 @@ export default class Message extends React.Component {
             console.log(error);
         }
     }
+    */
 
     getImage = () => {
         this.imageRef.getDownloadURL().then((url) => {
-            this.setState({image: url});
+            if (this._isMounted) {
+                this.setState({image: url});
+            }
         });
     }
 

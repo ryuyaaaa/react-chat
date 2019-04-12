@@ -164,20 +164,14 @@ export default class TalksScreen extends React.Component {
     }
 
     _moveToMessage = async(to) => {
-        var messages = [];
+        /*
         try {
             await AsyncStorage.setItem('messageTo', to);
         } catch(error) {
             console.log(error);
         }
-        this.messagesRef.get().then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                if ((doc.data().user._id == this.uid && doc.data().to_id == to) || (doc.data().user._id == to && doc.data().to_id == this.uid)) {
-                    messages.push(doc.data());
-                }
-            });
-        });
-        this.props.navigation.navigate('Message', {messages: messages});
+        */
+        this.props.navigation.navigate('Message', {toUid: to});
     }
 
     getImage = () => {

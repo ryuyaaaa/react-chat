@@ -32,6 +32,13 @@ export default class TalksScreen extends React.Component {
                 />,
     };
 
+    async componentWillMount() {
+        await Expo.Font.loadAsync({
+          'Roboto': require('native-base/Fonts/Roboto.ttf'),
+          'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+        });
+    }
+
     componentDidMount() {
         // Firestoreの「rooms」コレクションを参照
         this.roomsRef = firestore.collection('rooms');

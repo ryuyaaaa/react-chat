@@ -98,16 +98,6 @@ export default class Message extends React.Component {
         }
     }
 
-    /*
-    _getUid = async() => {
-        try {
-            this.uid = await AsyncStorage.getItem('uid');
-        } catch(error) {
-            console.log(error);
-        }
-    }
-    */
-
     getImage = () => {
         this.imageRef.getDownloadURL().then((url) => {
             if (this._isMounted) {
@@ -124,13 +114,13 @@ export default class Message extends React.Component {
         return (
             <GiftedChat
                 messages={this.state.messages}
-                onSend= {messages => this.onSend(messages)}
+                onSend={messages => this.onSend(messages)}
                 user={{
                     _id: this.uid,
                     name: 'ryuya',
                     avatar: this.state.image,
                 }}
-                messageIdGenerator={this.generateId}
+                messageIdGenerator={this.generateId}        
             />
         );
     }

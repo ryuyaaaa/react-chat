@@ -12,10 +12,10 @@ export default class Message extends React.Component {
     constructor(props) {
         super(props);
 
-        this._getInfo();
+        this._getUid();
 
         this.state = {
-            messages: this.props.navigation.state.params.messages,
+            messages: [],
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
         }
     }
@@ -50,13 +50,15 @@ export default class Message extends React.Component {
         this.imageRef = storage.ref('images/celine-farach.jpg');
         this.getImage();
 
+        this.toUid = this.props.navigation.getParam('toUid', null);
+
         // messagesRefの更新時イベントにonCollectionUpdate登録
-        this.unsubscribeMessages = this.messagesRef.onSnapshot(this.onMessagesCollectionUpdate);
+        this.unsubscribe = this.messagesRef.onSnapshot(this.onCollectionUpdate);
     }
 
     componentWillunmount() {
         // onCollectionUpdateの登録解除
-        this.unsubscribeMessages();
+        this.unsubscribe();
     }
 
     onSend = (messages = []) => {
@@ -71,7 +73,7 @@ export default class Message extends React.Component {
     }
 
     // firestoreのコレクションが更新された時のイベント
-    onMessagesCollectionUpdate = (querySnapshot) => {
+    onCollectionUpdate = (querySnapshot) => {
         
         var messages = [];
         querySnapshot.docs.forEach((doc) => {    
@@ -90,10 +92,9 @@ export default class Message extends React.Component {
         this.setState({ messages: messages });
     }
 
-    _getInfo = async() => {
+    _getUid = async() => {
         try {
             this.uid = await AsyncStorage.getItem('uid');
-            this.toUid = await AsyncStorage.getItem('messageTo');
         } catch(error) {
             console.log(error);
         }

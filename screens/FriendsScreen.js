@@ -223,7 +223,7 @@ export default class FriendsScreen extends React.Component {
                                         </Body>
                                         <Right>
                                             <Button transparent onPress={() => this.addTalkRoom(friend.to)}>
-                                                <Text>会話に追加する</Text>
+                                                <Text>...</Text>
                                             </Button>
                                         </Right>
                                     </ListItem>

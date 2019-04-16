@@ -222,7 +222,7 @@ export default class TalksScreen extends React.Component {
                                         <Text note style={{flex: 1, marginTop: 5}}>{lastMessage.substr(0,34)}</Text>
                                     </Body>
                                     <Right>
-                                        <Text note>{Number(lastCreatedAt.substr(11,2))+9 + lastCreatedAt.substr(13,3)}</Text>
+                                        <Text note>{lastCreatedAt? Number(lastCreatedAt.substr(11,2))+9 + lastCreatedAt.substr(13,3) : ''}</Text>
                                     </Right>
                                 </ListItem>
                             );

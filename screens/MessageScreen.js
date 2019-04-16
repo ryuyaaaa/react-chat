@@ -45,7 +45,7 @@ export default class Message extends React.Component {
         this.unsubscribe = this.messagesRef.onSnapshot(this.onCollectionUpdate);
     }
 
-    componentWillunmount() {
+    componentWillUnmount() {
         // onCollectionUpdateの登録解除
         this.unsubscribe();
         //this.imageRef();

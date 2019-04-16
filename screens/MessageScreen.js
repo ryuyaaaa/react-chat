@@ -68,7 +68,8 @@ export default class Message extends React.Component {
         
         var messages = [];
         querySnapshot.docs.forEach((doc) => {    
-            if ((doc.data().user._id == this.uid && doc.data().to_id == this.toUid) || (doc.data().user._id == this.toUid && doc.data().to_id == this.uid)) {
+            if ((doc.data().user._id == this.uid && doc.data().to_id == this.toUid) ||
+                 (doc.data().user._id == this.toUid && doc.data().to_id == this.uid)) {
                 messages.push(doc.data());
             }
         });
@@ -105,7 +106,7 @@ export default class Message extends React.Component {
                     name: 'ryuya',
                     avatar: this.state.image,
                 }}
-                messageIdGenerator={this.generateId}  
+                messageIdGenerator={this.generateId}
             />
         );
     }

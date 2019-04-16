@@ -23,13 +23,25 @@ export default class SettingsScreen extends React.Component {
         }
     }
 
-    static navigationOptions = {
-        header: <Header
+    static navigationOptions = ({navigation}) => {
+
+        logOut = async() => {
+            try {
+                await AsyncStorage.removeItem('uid');
+            } catch(error) {
+                console.log(error);
+            }
+            navigation.navigate('AuthLoading');
+        }
+
+        return {
+            header: <Header
                     placement="center"
                     leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '設定', style: { color: '#fff', fontWeight: 'bold' }}}
-                    rightComponent={{ icon: 'search', color: '#fff' }}
+                    rightComponent={{ text: 'ログアウト', style: {color: '#fff'}, onPress: logOut}}
                 />,
+        }
     };
 
     componentDidMount() {
@@ -44,7 +56,7 @@ export default class SettingsScreen extends React.Component {
         this.unsubscribe = this.usersRef.onSnapshot(this.onCollectionUpdate);
     }
 
-    componentWillunmount() {
+    componentWillUnmount() {
         // onCollectionUpdateの登録解除
         this.unsubscribe();
     }

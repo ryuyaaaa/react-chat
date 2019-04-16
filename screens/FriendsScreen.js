@@ -63,7 +63,7 @@ export default class FriendsScreen extends React.Component {
         this.unsubscribeUsers = this.usersRef.onSnapshot(this.onUsersCollectionUpdate);
     }
 
-    componentWillunmount() {
+    componentWillUnmount() {
         // onCollectionUpdateの登録解除
         this.unsubscribeFriends();
         this.unsubscribeUsers();

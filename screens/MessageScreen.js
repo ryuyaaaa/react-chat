@@ -9,8 +9,6 @@ const storage = require('../firebase').storage;
 
 export default class Message extends React.Component {
 
-    _isMounted = false;
-
     constructor(props) {
         super(props);
 
@@ -43,8 +41,6 @@ export default class Message extends React.Component {
 
     componentDidMount() {
 
-        this._isMounted = true;
-
         // Firestoreの「messages」コレクションを参照
         this.messagesRef = firestore.collection('messages');
 
@@ -60,7 +56,6 @@ export default class Message extends React.Component {
     }
 
     componentWillunmount() {
-        this._isMounted = false;
         // onCollectionUpdateの登録解除
         this.unsubscribe();
     }
@@ -93,16 +88,12 @@ export default class Message extends React.Component {
         });
     
         // messagesをstateに渡す
-        if (this._isMounted) {
-            this.setState({ messages: messages });
-        }
+        this.setState({ messages: messages });
     }
 
     getImage = () => {
         this.imageRef.getDownloadURL().then((url) => {
-            if (this._isMounted) {
-                this.setState({image: url});
-            }
+            this.setState({image: url});
         });
     }
 

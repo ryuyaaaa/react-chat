@@ -14,7 +14,7 @@ export default class Message extends React.Component {
 
         this.state = {
             messages: [],
-            image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
+            image: require('../assets/images/celine-farach.jpg'),
         }
     }
 
@@ -29,24 +29,14 @@ export default class Message extends React.Component {
         };
     };
 
-    /*
-    static navigationOptions = {
-        header: <Header
-                    placement="center"
-                    leftComponent={{ text: '戻る', color: '#fff'}}
-                    centerComponent={{ text: '会話', style: { color: '#fff' } }}
-                />,
-    };
-    */
-
     componentDidMount() {
 
         // Firestoreの「messages」コレクションを参照
         this.messagesRef = firestore.collection('messages');
 
         // Storageのプロフィール画像を参照
-        this.imageRef = storage.ref('images/celine-farach.jpg');
-        this.getImage();
+        //this.imageRef = storage.ref('images/celine-farach.jpg');
+        //this.getImage();
 
         this.uid = this.props.navigation.getParam('uid', null);
         this.toUid = this.props.navigation.getParam('toUid', null);
@@ -58,6 +48,7 @@ export default class Message extends React.Component {
     componentWillunmount() {
         // onCollectionUpdateの登録解除
         this.unsubscribe();
+        //this.imageRef();
     }
 
     onSend = (messages = []) => {
@@ -68,6 +59,7 @@ export default class Message extends React.Component {
             data.to_id = this.toUid;
             data.createdAt = message.createdAt.toISOString();
             this.messagesRef.add(data);
+            data = null;
         });
     }
 
@@ -91,11 +83,13 @@ export default class Message extends React.Component {
         this.setState({ messages: messages });
     }
 
+    /*
     getImage = () => {
         this.imageRef.getDownloadURL().then((url) => {
             this.setState({image: url});
         });
     }
+    */
 
     generateId = () => {
         return v4();
@@ -111,7 +105,7 @@ export default class Message extends React.Component {
                     name: 'ryuya',
                     avatar: this.state.image,
                 }}
-                messageIdGenerator={this.generateId}        
+                messageIdGenerator={this.generateId}  
             />
         );
     }

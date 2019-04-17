@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text, Alert } from 'react-native';
+import { AsyncStorage, Image, View, StyleSheet, TextInput, Switch, Text, ScrollView, Alert } from 'react-native';
 import { Header, SocialIcon } from 'react-native-elements';
 
 const firestore = require('../firebase').db;
@@ -15,6 +15,10 @@ export default class SettingsScreen extends React.Component {
         this.state = {
             name: '',
             comment: '',
+            twitter_url: '',
+            facebook_url: '',
+            instagram_url: '',
+            youtube_url: '',
             switch_twitter: false,
             switch_facebook: false,
             switch_instagram: false,
@@ -66,15 +70,42 @@ export default class SettingsScreen extends React.Component {
 
         var name = '';
         var comment = '';
+        var twitter_url = '';
+        var facebook_url = '';
+        var instagram_url = '';
+        var youtube_url = '';
+        var switch_twitter = false;
+        var switch_facebook = false;
+        var switch_instagram = false;
+        var switch_youtube = false;
         querySnapshot.docs.forEach((doc) => {
             if (doc.data()._id == this.uid) {
                 name = doc.data().name;
                 comment = doc.data().comment;
+                twitter_url = doc.data().twitter_url;
+                facebook_url = doc.data().facebook_url;
+                instagram_url = doc.data().instagram_url;
+                youtube_url = doc.data().youtube_url;
+                switch_twitter = doc.data().switch_twitter;
+                switch_facebook = doc.data().switch_facebook;
+                switch_instagram = doc.data().switch_instagram;
+                switch_youtube = doc.data().switch_youtube;
             }
         });
     
         // name, commentをstateに渡す
-        this.setState({ name: name, comment: comment });
+        this.setState({
+            name: name,
+            comment: comment,
+            twitter_url: twitter_url,
+            facebook_url: facebook_url,
+            instagram_url: instagram_url,
+            youtube_url: youtube_url,
+            switch_twitter: switch_twitter,
+            switch_facebook: switch_facebook,
+            switch_instagram: switch_instagram,
+            switch_youtube: switch_youtube,
+        });
     }
 
     typeName = (text) => {
@@ -83,6 +114,22 @@ export default class SettingsScreen extends React.Component {
 
     typeComment = (text) => {
         this.setState({comment: text});
+    }
+
+    typeTwitter = (text) => {
+        this.setState({twitter_url: text});
+    }
+
+    typeFacebook = (text) => {
+        this.setState({facebook_url: text});
+    }
+
+    typeInstagram = (text) => {
+        this.setState({instagram_url: text});
+    }
+
+    typeYoutube = (text) => {
+        this.setState({youtube_url: text});
     }
 
     _getUid = async() => {
@@ -99,6 +146,14 @@ export default class SettingsScreen extends React.Component {
             _id: this.uid,
             name: this.state.name,
             comment: this.state.comment,
+            twitter_url: this.state.twitter_url,
+            facebook_url: this.state.facebook_url,
+            instagram_url: this.state.instagram_url,
+            youtube_url: this.state.youtube_url,
+            switch_twitter: this.state.switch_twitter,
+            switch_facebook: this.state.switch_facebook,
+            switch_instagram: this.state.switch_instagram,
+            switch_youtube: this.state.switch_youtube
         }
         this.usersRef.doc(this.uid).set(data);
     }
@@ -109,74 +164,157 @@ export default class SettingsScreen extends React.Component {
         });
     }
 
+    changeSwitch = (value, num) => {
+        switch (num % 10) {
+            case 1:
+                this.setState({switch_twitter: value});
+                break;
+            case 2:
+                this.setState({switch_facebook: value});
+                break;
+            case 3:
+                this.setState({switch_instagram: value});
+                break;
+            case 4:
+                this.setState({switch_youtube: value});
+                break;
+            default:
+                Alert.alert('Error');
+                break;
+        }
+        this.saveProfile();
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-                <View style={styles.body}>
-                    
-                    <View style={styles.info}>
-                        <View style={{width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
-                                <Text style={{fontSize: 16, color: 'white'}}>名前</Text>
+                <ScrollView style={{flex: 1}}>
+                    <View style={styles.header}>
+                        <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
+                    </View>
+                    <View style={styles.body}>
+                        
+                        <View style={styles.info}>
+                            <View style={{width: '100%'}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>名前</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---NAME---'
+                                        value={this.state.name}
+                                        onChangeText={this.typeName}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
                             </View>
-                            <View style={{margin: 8}}>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder='---NAME---'
-                                    value={this.state.name}
-                                    onChangeText={this.typeName}
-                                    onEndEditing={this.saveProfile}
-                                />
+                        
+                            <View style={{width: '100%'}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>ひとこと</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---COMMENT---'
+                                        value={this.state.comment}
+                                        onChangeText={this.typeComment}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    
-                        <View style={{width: '100%'}}>
-                            <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
-                                <Text style={{fontSize: 16, color: 'white'}}>ひとこと</Text>
+
+                            <View style={{width: '100%', display: this.state.switch_twitter}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>Twitter URL</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---Twitter URL---'
+                                        value={this.state.twitter_url}
+                                        onChangeText={this.typeTwitter}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
                             </View>
-                            <View style={{}}>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder='---COMMENT---'
-                                    value={this.state.comment}
-                                    onChangeText={this.typeComment}
-                                    onEndEditing={this.saveProfile}
-                                />
+
+                            <View style={{width: '100%', display: this.state.switch_facebook}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>Facebook URL</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---Facebook URL---'
+                                        value={this.state.facebook_url}
+                                        onChangeText={this.typeFacebook}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
                             </View>
+
+                            <View style={{width: '100%', display: this.state.switch_instagram}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>Instagram URL</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---Instagram URL---'
+                                        value={this.state.instagram_url}
+                                        onChangeText={this.typeInstagram}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={{width: '100%', display: this.state.switch_youtube}}>
+                                <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
+                                    <Text style={{fontSize: 16, color: 'white'}}>Youtube URL</Text>
+                                </View>
+                                <View style={{}}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder='---Youtube URL---'
+                                        value={this.state.youtube_url}
+                                        onChangeText={this.typeYoutube}
+                                        onEndEditing={this.saveProfile}
+                                    />
+                                </View>
+                            </View>
+
                         </View>
                     </View>
+                </ScrollView>
 
-                    <View style={styles.contentsContainer}>
-                        <View style={{backgroundColor: '#c0c0c0', margin: 8, marginBottom: 0}}>
+                <View style={styles.contentsContainer}>
+                    <View style={{backgroundColor: '#c0c0c0'}}>
+                        <View style={{backgroundColor: '#c0c0c0'}}>
                             <Text style={{fontSize: 16, color: 'white'}}>公開SNS</Text>
                         </View>
-
-                        <View style={styles.contents}>
-                            <View style={styles.contentsItem}>
-                                <SocialIcon raised={false} type='twitter'/>
-                                <Switch value={this.state.switch_twitter} onValueChange={(value) => this.setState({switch_twitter: value})}/>
-                            </View>
-                            <View style={styles.contentsItem}>
-                                <SocialIcon raised={false} type='facebook'/>
-                                <Switch value={this.state.switch_facebook} onValueChange={(value) => this.setState({switch_facebook: value})}/>
-                            </View>
-                            <View style={styles.contentsItem}>
-                                <SocialIcon raised={false} type='instagram'/>
-                                <Switch value={this.state.switch_instagram} onValueChange={(value) => this.setState({switch_instagram: value})}/>
-                            </View>
-                            <View style={styles.contentsItem}>
-                                <SocialIcon raised={false} type='youtube'/>
-                                <Switch value={this.state.switch_youtube} onValueChange={(value) => this.setState({switch_youtube: value})}/>
-                            </View>
-                        </View>
                     </View>
-
-                    
+                    <View style={styles.contents}>
+                        <View style={styles.contentsItem}>
+                            <SocialIcon raised={false} type='twitter'/>
+                            <Switch value={this.state.switch_twitter} onValueChange={(value) => this.changeSwitch(value, 1)}/>
+                        </View>
+                        <View style={styles.contentsItem}>
+                            <SocialIcon raised={false} type='facebook'/>
+                            <Switch value={this.state.switch_facebook} onValueChange={(value) => this.changeSwitch(value, 2)}/>
+                        </View>
+                        <View style={styles.contentsItem}>
+                            <SocialIcon raised={false} type='instagram'/>
+                            <Switch value={this.state.switch_instagram} onValueChange={(value) => this.changeSwitch(value, 3)}/>
+                        </View>
+                        <View style={styles.contentsItem}>
+                            <SocialIcon raised={false} type='youtube'/>
+                            <Switch value={this.state.switch_youtube} onValueChange={(value) => this.changeSwitch(value, 4)}/>
+                        </View>
+                    </View> 
                 </View>
-            </View>
+            </View>   
         );
     }
 }
@@ -184,16 +322,16 @@ export default class SettingsScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 10,
-        // backgroundColor: 'red',
+        //backgroundColor: 'red',
     },
     header: {
-        flex: 0.7,
-        // backgroundColor: 'blue',
+        margin: 10,
+        height: 200,
+        //backgroundColor: 'blue',
     },
     body: {
-        flex: 1,
-        // backgroundColor: 'green',
+        marginTop: 10,
+        //backgroundColor: 'green',
     },
     input: {
         fontSize: 20,
@@ -201,18 +339,20 @@ const styles = StyleSheet.create({
     },
     info: {
         flex: 1,
-        // backgroundColor: 'red',
+        //backgroundColor: 'red',
         alignItems: 'center'
     },
     contentsContainer: {
-        flex: 1
+        flex: 0.3,
+        margin: 10,
     },
     contents: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        alignItems: 'center',
     },
     contentsItem: {
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',

@@ -19,11 +19,8 @@ export default class SettingsScreen extends React.Component {
             facebook_url: '',
             instagram_url: '',
             youtube_url: '',
-            switch_twitter: false,
-            switch_facebook: false,
-            switch_instagram: false,
-            switch_youtube: false,
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
+            //footerWidth: 0,
         }
     }
 
@@ -74,10 +71,11 @@ export default class SettingsScreen extends React.Component {
         var facebook_url = '';
         var instagram_url = '';
         var youtube_url = '';
-        var switch_twitter = false;
-        var switch_facebook = false;
-        var switch_instagram = false;
-        var switch_youtube = false;
+        var switch_twitter = this.state.switch_twitter;
+        var switch_facebook = this.state.switch_facebook;
+        var switch_instagram = this.state.switch_instagram;
+        var switch_youtube = this.state.switch_youtube;
+
         querySnapshot.docs.forEach((doc) => {
             if (doc.data()._id == this.uid) {
                 name = doc.data().name;
@@ -155,6 +153,7 @@ export default class SettingsScreen extends React.Component {
             switch_instagram: this.state.switch_instagram,
             switch_youtube: this.state.switch_youtube
         }
+
         this.usersRef.doc(this.uid).set(data);
     }
 
@@ -164,25 +163,24 @@ export default class SettingsScreen extends React.Component {
         });
     }
 
-    changeSwitch = (value, num) => {
-        switch (num % 10) {
-            case 1:
-                this.setState({switch_twitter: value});
-                break;
-            case 2:
-                this.setState({switch_facebook: value});
-                break;
-            case 3:
-                this.setState({switch_instagram: value});
-                break;
-            case 4:
-                this.setState({switch_youtube: value});
-                break;
-            default:
-                Alert.alert('Error');
-                break;
-        }
-        this.saveProfile();
+    changeTwitterSwitch = (value) => {
+        this.setState({switch_twitter: value});    
+        this.usersRef.doc(this.uid).update({switch_twitter: value});
+    }
+
+    changeFacebookSwitch = (value) => {
+        this.setState({switch_facebook: value});    
+        this.usersRef.doc(this.uid).update({switch_facebook: value});
+    }
+
+    changeInstagramSwitch = (value) => {
+        this.setState({switch_instagram: value});    
+        this.usersRef.doc(this.uid).update({switch_instagram: value});
+    }
+
+    changeYoutubeSwitch = (value) => {
+        this.setState({switch_youtube: value});    
+        this.usersRef.doc(this.uid).update({switch_youtube: value});
     }
 
     render() {
@@ -225,7 +223,7 @@ export default class SettingsScreen extends React.Component {
                                 </View>
                             </View>
 
-                            <View style={{width: '100%', display: this.state.switch_twitter}}>
+                            <View style={{width: '100%'}}>
                                 <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                     <Text style={{fontSize: 16, color: 'white'}}>Twitter URL</Text>
                                 </View>
@@ -240,7 +238,7 @@ export default class SettingsScreen extends React.Component {
                                 </View>
                             </View>
 
-                            <View style={{width: '100%', display: this.state.switch_facebook}}>
+                            <View style={{width: '100%'}}>
                                 <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                     <Text style={{fontSize: 16, color: 'white'}}>Facebook URL</Text>
                                 </View>
@@ -255,7 +253,7 @@ export default class SettingsScreen extends React.Component {
                                 </View>
                             </View>
 
-                            <View style={{width: '100%', display: this.state.switch_instagram}}>
+                            <View style={{width: '100%'}}>
                                 <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                     <Text style={{fontSize: 16, color: 'white'}}>Instagram URL</Text>
                                 </View>
@@ -270,7 +268,7 @@ export default class SettingsScreen extends React.Component {
                                 </View>
                             </View>
 
-                            <View style={{width: '100%', display: this.state.switch_youtube}}>
+                            <View style={{width: '100%'}}>
                                 <View style={{backgroundColor: '#c0c0c0', margin: 8}}>
                                     <Text style={{fontSize: 16, color: 'white'}}>Youtube URL</Text>
                                 </View>
@@ -298,19 +296,19 @@ export default class SettingsScreen extends React.Component {
                     <View style={styles.contents}>
                         <View style={styles.contentsItem}>
                             <SocialIcon raised={false} type='twitter'/>
-                            <Switch value={this.state.switch_twitter} onValueChange={(value) => this.changeSwitch(value, 1)}/>
+                            <Switch value={this.state.switch_twitter} onValueChange={(value) => this.changeTwitterSwitch(value)}/>
                         </View>
                         <View style={styles.contentsItem}>
                             <SocialIcon raised={false} type='facebook'/>
-                            <Switch value={this.state.switch_facebook} onValueChange={(value) => this.changeSwitch(value, 2)}/>
+                            <Switch value={this.state.switch_facebook} onValueChange={(value) => this.changeFacebookSwitch(value)}/>
                         </View>
                         <View style={styles.contentsItem}>
                             <SocialIcon raised={false} type='instagram'/>
-                            <Switch value={this.state.switch_instagram} onValueChange={(value) => this.changeSwitch(value, 3)}/>
+                            <Switch value={this.state.switch_instagram} onValueChange={(value) => this.changeInstagramSwitch(value)}/>
                         </View>
                         <View style={styles.contentsItem}>
                             <SocialIcon raised={false} type='youtube'/>
-                            <Switch value={this.state.switch_youtube} onValueChange={(value) => this.changeSwitch(value, 4)}/>
+                            <Switch value={this.state.switch_youtube} onValueChange={(value) => this.changeYoutubeSwitch(value)}/>
                         </View>
                     </View> 
                 </View>
@@ -343,11 +341,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     contentsContainer: {
-        flex: 0.3,
-        margin: 10,
+        //flex: 1,
+        //position: "absolute",
+        bottom: 10,
+        //justifyContent: "center",
     },
     contents: {
-        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },

@@ -218,7 +218,7 @@ export default class TalksScreen extends React.Component {
                                     </Left>
                                     <Body>
                                         <Text>{name}</Text>
-                                        {/* <Text note>Doing what you like will always keep you happy . .</Text> */}
+                                        {/* <Text note numberOfLines={1}>Doing what you like will always keep you happy . .</Text> */}
                                         <Text note style={{flex: 1, marginTop: 5}}>{lastMessage.substr(0,34)}</Text>
                                     </Body>
                                     <Right>

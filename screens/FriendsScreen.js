@@ -22,6 +22,7 @@ export default class FriendsScreen extends React.Component {
             search: '',
             error: false,
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
+            toUid: '',
         }
     }
     
@@ -167,6 +168,13 @@ export default class FriendsScreen extends React.Component {
         this.roomsRef.add(data);
     }
 
+    tapImage = (to) => {
+        this.setState({
+            toUid: to,
+            modal: true,
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -192,9 +200,9 @@ export default class FriendsScreen extends React.Component {
                 <Modal
                     isVisible={this.state.modal}
                     onBackdropPress={() => this.setState({ modal: false })}>
-                    <View style={styles.modalContainer}>
-                        <Thumbnail avatar source={{uri: this.state.image}} />
-                    </View>
+                    <Profile
+                        to={this.state.toUid}
+                    />
                 </Modal>
                 
                 <Container>
@@ -215,7 +223,7 @@ export default class FriendsScreen extends React.Component {
                                 return (
                                     <ListItem thumbnail key={i}>
                                         <Left>
-                                            <Thumbnail avatar source={{uri: this.state.image}} />
+                                            <Thumbnail avatar source={{uri: this.state.image}} onPress={() => this.tapImage(user._id)} />
                                         </Left>
                                         <Body>
                                             <Text>{name}</Text>

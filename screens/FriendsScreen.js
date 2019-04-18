@@ -1,9 +1,11 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, View, TextInput, Alert } from 'react-native';
+import { AsyncStorage, StyleSheet, View, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Header, Input } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Modal from "react-native-modal";
+
+import Profile from './ProfileScreen';
 
 const firestore = require('../firebase').db;
 const storage = require('../firebase').storage;
@@ -108,10 +110,6 @@ export default class FriendsScreen extends React.Component {
         }
     }
 
-    createAddModal = () => {
-        this.setState({modal: true});
-    }
-
     addFriend = (to) => {
         // Firestoreのコレクションに追加
         var data = {
@@ -119,10 +117,6 @@ export default class FriendsScreen extends React.Component {
             to: to,
         }
         this.friendsRef.add(data);
-    }
-
-    closeModal = () => {
-        this.setState({modal:false});
     }
 
     checkUserExist = () => {
@@ -168,11 +162,17 @@ export default class FriendsScreen extends React.Component {
         this.roomsRef.add(data);
     }
 
-    tapImage = (to) => {
-        this.setState({
-            toUid: to,
-            modal: true,
-        });
+    moveToProfile = (to) => {
+        this.setState({toUid: to});
+        this.createModal();
+    }
+
+    createModal = () => {
+        this.setState({modal: true})
+    }
+
+    closeModal = () => {
+        this.setState({modal: false});
     }
 
     render() {
@@ -199,10 +199,8 @@ export default class FriendsScreen extends React.Component {
 
                 <Modal
                     isVisible={this.state.modal}
-                    onBackdropPress={() => this.setState({ modal: false })}>
-                    <Profile
-                        to={this.state.toUid}
-                    />
+                    onBackButtonPress={() => this.closeModal()}>
+                    <Profile/>
                 </Modal>
                 
                 <Container>
@@ -223,7 +221,7 @@ export default class FriendsScreen extends React.Component {
                                 return (
                                     <ListItem thumbnail key={i}>
                                         <Left>
-                                            <Thumbnail avatar source={{uri: this.state.image}} onPress={() => this.tapImage(user._id)} />
+                                            <Thumbnail avatar source={{uri: this.state.image}}/>
                                         </Left>
                                         <Body>
                                             <Text>{name}</Text>

@@ -233,7 +233,7 @@ export default class FriendsScreen extends React.Component {
                                             </Button>
                                         </Right>
                                     </ListItem>
-                                );   
+                                );
                             })}
                         </List>
                     </Content>

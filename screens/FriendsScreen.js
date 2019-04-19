@@ -1,11 +1,8 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, View, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { AsyncStorage, StyleSheet, View, Image, Modal } from 'react-native';
 import { Header, Input } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Modal from "react-native-modal";
-
-import Profile from './ProfileScreen';
 
 const firestore = require('../firebase').db;
 const storage = require('../firebase').storage;
@@ -21,10 +18,12 @@ export default class FriendsScreen extends React.Component {
             friends: [],
             users: [],
             modal: false,
+            modal_to: '',
+            modal_to_name: '',
+            modal_to_comment: '',
             search: '',
             error: false,
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
-            toUid: '',
         }
     }
     
@@ -162,13 +161,8 @@ export default class FriendsScreen extends React.Component {
         this.roomsRef.add(data);
     }
 
-    moveToProfile = (to) => {
-        this.setState({toUid: to});
-        this.createModal();
-    }
-
-    createModal = () => {
-        this.setState({modal: true})
+    openModal = (to, name, comment) => {
+        this.setState({modal: true, modal_to: to, modal_to_name: name, modal_to_comment: comment});
     }
 
     closeModal = () => {
@@ -179,6 +173,30 @@ export default class FriendsScreen extends React.Component {
         return (
             <View style={styles.container}>
 
+                <Modal
+                    visible={this.state.modal}
+                    animationType={'slide'}
+                    onRequestClose={() => this.closeModal()}
+                    transparent={true}
+                >
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={styles.modalContainer}>
+                            <Text style={{textAlign: 'right', fontSize: 24, marginRight: 5}}>✖</Text>
+                            <View style={{flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
+                                <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
+                            </View>
+                            <View style={{flex: 1, borderTopWidth: 0.5}}>
+                                <View style={{flex: 1}}>
+                                    <Text>{this.state.modal_to_name}</Text>
+                                </View>
+                                <View style={{flex: 1.3}}>
+                                    <Text>{this.state.modal_to_comment}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
+                </Modal>
                 <Input
                     placeholder='追加するユーザのIDを入力'
                     leftIcon={
@@ -193,15 +211,8 @@ export default class FriendsScreen extends React.Component {
                     leftIconContainerStyle={{marginRight: 12}}
                     errorMessage={this.state.error? 'IDが存在しません' : null}
                     errorStyle={{color: 'red'}}
-                    // onEndEditing={this.checkUserExist}
                     onSubmitEditing={this.checkUserExist}
                 />
-
-                <Modal
-                    isVisible={this.state.modal}
-                    onBackButtonPress={() => this.closeModal()}>
-                    <Profile/>
-                </Modal>
                 
                 <Container>
                     <Content>
@@ -210,16 +221,18 @@ export default class FriendsScreen extends React.Component {
 
                                 var name = '';
                                 var comment = '';
+                                var user_id = '';
 
                                 this.state.users.forEach((user) => {
                                     if (user._id == friend.to) {
                                         name = user.name;
                                         comment = user.comment;
+                                        user_id = user._id;
                                     }
                                 });
 
                                 return (
-                                    <ListItem thumbnail key={i}>
+                                    <ListItem thumbnail key={i} onPress={() => this.openModal(user_id, name, comment)}>
                                         <Left>
                                             <Thumbnail avatar source={{uri: this.state.image}}/>
                                         </Left>
@@ -247,7 +260,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     modalContainer: {
-        flex: 1,
-        backgroundColor: 'green',
+        width: '85%',
+        height: 300,
+        //backgroundColor: 'green',
+        borderRadius: 20,
+        borderWidth: 0.5,
+        borderColor: 'black'
     },
 });

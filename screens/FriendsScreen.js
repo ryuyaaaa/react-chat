@@ -1,6 +1,6 @@
 import React from 'react';
-import { AsyncStorage, StyleSheet, View, Image, Modal } from 'react-native';
-import { Header, Input } from 'react-native-elements';
+import { AsyncStorage, StyleSheet, View, Image, Modal, Alert } from 'react-native';
+import { Header, Input, SocialIcon } from 'react-native-elements';
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -21,6 +21,10 @@ export default class FriendsScreen extends React.Component {
             modal_to: '',
             modal_to_name: '',
             modal_to_comment: '',
+            modal_to_twitter: '',
+            modal_to_facebook: '',
+            modal_to_instagram: '',
+            modal_to_youtube: '',
             search: '',
             error: false,
             image: 'https://firebasestorage.googleapis.com/v0/b/react-native-chat-4a3b1.appspot.com/o/images%2Fceline-farach.jpg?alt=media&token=efd4b16b-c587-4970-9b03-1ae3a715ceea',
@@ -161,8 +165,8 @@ export default class FriendsScreen extends React.Component {
         this.roomsRef.add(data);
     }
 
-    openModal = (to, name, comment) => {
-        this.setState({modal: true, modal_to: to, modal_to_name: name, modal_to_comment: comment});
+    openModal = (to, name, comment, twitter, facebook, instagram, youtube) => {
+        this.setState({modal: true, modal_to: to, modal_to_name: name, modal_to_comment: comment, modal_to_twitter: twitter, modal_to_facebook: facebook, modal_to_instagram: instagram, modal_to_youtube: youtube});
     }
 
     closeModal = () => {
@@ -181,22 +185,40 @@ export default class FriendsScreen extends React.Component {
                 >
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <View style={styles.modalContainer}>
-                            <Text style={{textAlign: 'right', fontSize: 24, marginRight: 5}}>✖</Text>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <Text style={{fontSize: 24}} onPress={() => this.closeModal()}>✖</Text>
+                            </View>
                             <View style={{flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
                                 <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
                             </View>
                             <View style={{flex: 1, borderTopWidth: 0.5}}>
-                                <View style={{flex: 1}}>
-                                    <Text>{this.state.modal_to_name}</Text>
+                                <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+                                    <View style={{borderBottomWidth: 1, borderBottomColor: 'gray'}}>
+                                        <Text style={{fontSize: 30}}>{this.state.modal_to_name}</Text>
+                                    </View>
                                 </View>
-                                <View style={{flex: 1.3}}>
+                                <View style={{flex: 1.3, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text>{this.state.modal_to_comment}</Text>
+                                </View>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}> 
+                                <View style={{backgroundColor: 'red'}}>
+                                    <SocialIcon raised={false} type='twitter'/>
+                                </View>
+                                <View style={{backgroundColor: 'green'}}>
+                                    <SocialIcon raised={false} type='facebook'/>
+                                </View>
+                                <View style={{backgroundColor: 'red'}}>
+                                    <SocialIcon raised={false} type='instagram'/>
+                                </View>
+                                <View style={{backgroundColor: 'green'}}>
+                                    <SocialIcon raised={false} type='youtube'/>
                                 </View>
                             </View>
                         </View>
                     </View>
-
                 </Modal>
+
                 <Input
                     placeholder='追加するユーザのIDを入力'
                     leftIcon={
@@ -222,17 +244,25 @@ export default class FriendsScreen extends React.Component {
                                 var name = '';
                                 var comment = '';
                                 var user_id = '';
+                                var twitter_url = '';
+                                var facebook_url = '';
+                                var instagram_url = '';
+                                var youtube_url = '';
 
                                 this.state.users.forEach((user) => {
                                     if (user._id == friend.to) {
                                         name = user.name;
                                         comment = user.comment;
                                         user_id = user._id;
+                                        twitter_url = user.twitter_url;
+                                        facebook_url = user.facebook_url;
+                                        instagram_url = user.instagram_url;
+                                        youtube_url = user.youtube_url;
                                     }
                                 });
 
                                 return (
-                                    <ListItem thumbnail key={i} onPress={() => this.openModal(user_id, name, comment)}>
+                                    <ListItem thumbnail key={i} onPress={() => this.openModal(user_id, name, comment, twitter_url, facebook_url, instagram_url, youtube_url)}>
                                         <Left>
                                             <Thumbnail avatar source={{uri: this.state.image}}/>
                                         </Left>

@@ -41,7 +41,7 @@ export default class SettingsScreen extends React.Component {
         return {
             header: <Header
                     placement="center"
-                    leftComponent={{ icon: 'menu', color: '#fff' }}
+                    // leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '設定', style: { color: '#fff', fontWeight: 'bold' }}}
                     rightComponent={{ text: 'ログアウト', style: {color: '#fff'}, onPress: logOut}}
                 />,

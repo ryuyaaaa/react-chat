@@ -26,9 +26,9 @@ export default class TalksScreen extends React.Component {
     static navigationOptions = {
         header: <Header
                     placement="center"
-                    leftComponent={{ icon: 'menu', color: '#fff' }}
+                    // leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '会話', style: { color: '#fff', fontWeight: 'bold' }}}
-                    rightComponent={{ icon: 'search', color: '#fff' }}
+                    // rightComponent={{ icon: 'search', color: '#fff' }}
                 />,
     };
 

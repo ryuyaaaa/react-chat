@@ -34,9 +34,9 @@ export default class FriendsScreen extends React.Component {
     static navigationOptions = {
         header: <Header
                     placement="center"
-                    leftComponent={{ icon: 'menu', color: '#fff' }}
+                    // leftComponent={{ icon: 'menu', color: '#fff' }}
                     centerComponent={{ text: '友達', style: { color: '#fff', fontWeight: 'bold' }}}
-                    rightComponent={{ icon: 'add', color: '#fff'}}
+                    // rightComponent={{ icon: 'add', color: '#fff'}}
                 />,
     };
     
@@ -185,13 +185,13 @@ export default class FriendsScreen extends React.Component {
                 >
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <View style={styles.modalContainer}>
-                            <View style={{alignItems: 'flex-end'}}>
-                                <Text style={{fontSize: 24}} onPress={() => this.closeModal()}>✖</Text>
-                            </View>
                             <View style={{flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20}}>
                                 <Image source={{uri: this.state.image}} resizeMode={'cover'} style={{flex: 1, width: undefined, height: undefined}}/>
                             </View>
-                            <View style={{flex: 1, borderTopWidth: 0.5}}>
+                            <View style={{position: 'absolute', top: 0, right: 0}}>
+                                <Text style={{fontSize: 24}} onPress={() => this.closeModal()}>✖</Text>
+                            </View>
+                            <View style={{flex: 1}}>
                                 <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
                                     <View style={{borderBottomWidth: 1, borderBottomColor: 'gray'}}>
                                         <Text style={{fontSize: 30}}>{this.state.modal_to_name}</Text>
@@ -201,19 +201,11 @@ export default class FriendsScreen extends React.Component {
                                     <Text>{this.state.modal_to_comment}</Text>
                                 </View>
                             </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}> 
-                                <View style={{backgroundColor: 'red'}}>
-                                    <SocialIcon raised={false} type='twitter'/>
-                                </View>
-                                <View style={{backgroundColor: 'green'}}>
-                                    <SocialIcon raised={false} type='facebook'/>
-                                </View>
-                                <View style={{backgroundColor: 'red'}}>
-                                    <SocialIcon raised={false} type='instagram'/>
-                                </View>
-                                <View style={{backgroundColor: 'green'}}>
-                                    <SocialIcon raised={false} type='youtube'/>
-                                </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-around'}}> 
+                                <SocialIcon raised={false} type='twitter'/>
+                                <SocialIcon raised={false} type='facebook'/>
+                                <SocialIcon raised={false} type='instagram'/>
+                                <SocialIcon raised={false} type='youtube'/>
                             </View>
                         </View>
                     </View>
@@ -291,10 +283,8 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: '85%',
-        height: 300,
-        //backgroundColor: 'green',
-        borderRadius: 20,
-        borderWidth: 0.5,
-        borderColor: 'black'
+        height: 400,
+        borderColor: 'black',
+        borderWidth: 1
     },
 });
